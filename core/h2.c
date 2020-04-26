@@ -28,14 +28,18 @@
 
 #include "h2.h"
 
+/* BSD originated header */
+#ifdef __FreeBSD__
+#include <sys/endian.h>
+#else
+#include <endian.h>
+#endif
+
 #include <netinet/in.h>     // for ntohs
 #include <stdint.h>         // for uint8_t, uint32_t
 #include <stdlib.h>         // for free, malloc
 #include <stdio.h>
 #include <string.h>
-
-/* BSD originated header */
-#include <endian.h>
 
 #include "core/security.h"
 #include "http2/frame.h"
