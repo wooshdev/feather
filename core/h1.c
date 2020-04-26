@@ -443,7 +443,7 @@ int recoverError(CSSClient client, enum HTTPError error,
 	};
 
 	printf("error was: %s (client is %p, request is %p)\n", names[error], 
-		   client, request);
+		   (void *) client, (void *) request);
 
 	/* We're done with request handling and after this we're just preparing the
 	 * response, so the request object isn't needed anymore and can be released

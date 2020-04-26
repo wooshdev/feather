@@ -191,7 +191,7 @@ void GSNotify(enum GSAction action) {
 			GSMainLoop = 0;
 			break;
 		default:
-			printf("[GSNotify] Unknown GSAction: %hhX\n", action);
+			printf("[GSNotify] Unknown GSAction: %X\n", action);
 	}
 }
 

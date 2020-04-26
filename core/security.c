@@ -156,7 +156,7 @@ int CSSetupSecurityManager(void) {
 	BIO_free(bio);
 	X509_free(cert);
 
-// 	SSL_CTX_set_alpn_select_cb(SSLContext, alpnHandler, NULL);
+	SSL_CTX_set_alpn_select_cb(SSLContext, alpnHandler, NULL);
 	
 	return 1;
 }
