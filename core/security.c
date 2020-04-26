@@ -28,20 +28,24 @@
 
 #include "security.h"
 
+#include <sys/types.h>
+
 #include <errno.h>
-#include <sched.h>
 #include <stddef.h>
 #include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <sys/socket.h>
-#include <sys/types.h>
-#include <unistd.h>
 
-#include <openssl/engine.h>
+
+#include <openssl/bio.h>
 #include <openssl/conf.h>
 #include <openssl/crypto.h>
+#include <openssl/engine.h>
 #include <openssl/err.h>
+#include <openssl/evp.h>
+#include <openssl/pem.h>
+#include <openssl/ssl.h> // IWYU pragma: keep
+#include <openssl/ssl3.h>
+#include <openssl/tls1.h>
+#include <openssl/x509.h>
 
 #include "misc/default.h"
 #include "misc/io.h"

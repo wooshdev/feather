@@ -32,9 +32,7 @@
 #include <sched.h>
 #include <stddef.h>
 #include <stdio.h>
-#include <stdlib.h>
 #include <sys/socket.h>
-#include <sys/types.h>
 #include <unistd.h>
 
 #include "base/global_state.h"

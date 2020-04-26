@@ -29,9 +29,10 @@
 #include "io.h"
 
 #include <netinet/in.h>
+#include <sys/select.h>
 #include <sys/socket.h>
 #include <sys/stat.h>
-#include <sys/types.h>
+#include <sys/time.h>
 
 #include <errno.h>
 #include <fcntl.h>

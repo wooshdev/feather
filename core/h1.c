@@ -28,6 +28,16 @@
 
 #include "h1.h"
 
+#include <bits/types/struct_tm.h>
+#include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <strings.h>
+#include <sys/time.h>
+#include <time.h>
+#include "core/security.h"
+#include "http/strings.h"
+
 #include <string.h>
 
 #include "cache/cache.h"

@@ -29,7 +29,7 @@
 #ifndef CACHE_COMPRESSION_H
 #define CACHE_COMPRESSION_H
 
-#include "cache/cache.h"
+struct FCEntry;
 
 int		FCCompressFile(const char *, struct FCEntry *entry);
 int		FCCompressionSetup(void);

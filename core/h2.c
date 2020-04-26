@@ -28,17 +28,21 @@
 
 #include "h2.h"
 
-#include <arpa/inet.h>
-
+#include <netinet/in.h>     // for ntohs
+#include <stdint.h>         // for uint8_t, uint32_t
+#include <stdlib.h>         // for free, malloc
 #include <stdio.h>
 #include <string.h>
 
 /* BSD originated header */
 #include <endian.h>
 
+#include "core/security.h"
 #include "http2/frame.h"
-#include "http2/settings.h"
 #include "misc/default.h"
+
+/* Instead of http2/settings.h */
+struct H2Setting;
 
 const char HTTP2Preface[] = "PRI * HTTP/2.0\r\n\r\nSM\r\n\r\n";
 

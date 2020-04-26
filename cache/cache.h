@@ -33,8 +33,6 @@
 
 #include <time.h>
 
-#include "http/strings.h"
-
 struct FCVersion {
 	char		*data;
 	const char	*encoding;

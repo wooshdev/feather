@@ -32,12 +32,15 @@
 
 #include <fcntl.h>
 #include <stdio.h>
+#include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
 
 #include <brotli/encode.h>
+#include <brotli/types.h>
 
+#include "cache/cache.h"
 #include "http/strings.h"
 #include "misc/default.h"
 #include "misc/io.h"

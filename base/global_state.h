@@ -32,6 +32,7 @@
 #define BASE_GLOBAL_STATE_H
 
 #include <pthread.h>
+#include <stddef.h>
 
 struct GSThread {
 	int			 state;
