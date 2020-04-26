@@ -1,5 +1,5 @@
-CC = gcc
-CFLAGS = -Wall -Wextra -g -I.
+CC = clang
+CFLAGS = -Wall -Wextra -Wpedantic -g -I.
 LDFLAGS = -pthread -lm `pkg-config --static --libs openssl libbrotlicommon libbrotlienc`
 
 BINARIES = \
