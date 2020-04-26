@@ -384,16 +384,16 @@ int handleRequest(CSSClient client) {
 		"ReadVersion(%zu μs) ReadHeaders (%zu μs) Handling(%zu μs)"
 		ANSI_COLOR_YELLOW"%s%s%s"ANSI_COLOR_RESETLN, timings.path,
 		timingsBufferingValue, timingsBufferingUnit,
-		(timings.readMethod.after - timings.readMethod.before) * (size_t) 1e6 /
-		CLOCKS_PER_SEC,
-		(timings.readPath.after - timings.readPath.before) * (size_t) 1e6 /
-		CLOCKS_PER_SEC,
-		(timings.readVersion.after - timings.readVersion.before) * (size_t) 1e6
-		/ CLOCKS_PER_SEC,
-		(timings.readHeaders.after - timings.readHeaders.before) * (size_t) 1e6
-		/ CLOCKS_PER_SEC,
-		(timings.handling.after - timings.handling.before) * (size_t) 1e6 /
-		CLOCKS_PER_SEC,
+		(size_t) ((timings.readMethod.after - timings.readMethod.before) *
+		(size_t) 1e6 / CLOCKS_PER_SEC),
+		(size_t) ((timings.readPath.after - timings.readPath.before) * 
+		(size_t) 1e6 / CLOCKS_PER_SEC),
+		(size_t) ((timings.readVersion.after - timings.readVersion.before) * 
+		(size_t) 1e6 / CLOCKS_PER_SEC),
+		(size_t) ((timings.readHeaders.after - timings.readHeaders.before) * 
+		(size_t) 1e6 / CLOCKS_PER_SEC),
+		(size_t) ((timings.handling.after - timings.handling.before) * 
+		(size_t) 1e6 / CLOCKS_PER_SEC),
 		(timings.flags & TF_CLIENT_CACHED ? ANSI_COLOR_BLUE";"ANSI_COLOR_YELLOW
 			" client-cached" : ""),
 		(timings.flags & TF_COMPRESSED ? ANSI_COLOR_BLUE";"ANSI_COLOR_YELLOW
