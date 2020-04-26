@@ -1,3 +1,6 @@
+# Makefile work is licensed under a Creative Commons Attribution-ShareAlike 4.0
+# International License. See <https://creativecommons.org/licenses/by-sa/4.0/>.
+
 ADDITIONAL_CFLAGS =
 ADDITIONAL_LDFLAGS =
 CC = clang
@@ -31,6 +34,9 @@ all: server
 server: main.c bin/dirinfo $(BINARIES)
 	$(CC) $(CFLAGS) -o $@ main.c $(BINARIES) $(LDFLAGS)
 
+# This target will create the directory structure for the build files. The
+# binaries should have approximately the same path. For example: 'foo/bar.c'
+# should cast to 'bin/foo/bar.o'
 bin/dirinfo:
 	@mkdir -p bin/base
 	@touch bin/dirinfo
@@ -105,9 +111,28 @@ bin/redir/server.so: redir/server.c \
 	redir/server.h
 	$(CC) $(CFLAGS) -c -o $@ redir/server.c
 
+# Destroys ALL build files, but will leave the source files intact.
 clean:
 	rm -rf bin
 	rm -f server
 
+## Tools
+
+# the 'memory' target will invoke Valgrind, which will run the executable and
+# can track memory usage. Memory leaks, double free()'s, use-after-free,
+# uninitialised values, etc. can be found by using this tool.
 memory:
-	valgrind --num-callers=100 --leak-resolution=high --leak-check=full --track-origins=yes --show-leak-kinds=all --track-fds=yes ./server
+	valgrind --num-callers=100 \
+		 --leak-resolution=high \
+		 --leak-check=full \
+		 --track-origins=yes \
+		 --show-leak-kinds=all \
+		 --track-fds=yes \
+		 ./server
+
+# the 'cppcheck' target will invoke the cppcheck program. This program 
+# statically analyzes the code.
+cppcheck:
+	cppcheck --enable=all .
+
+
