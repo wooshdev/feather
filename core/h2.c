@@ -39,7 +39,6 @@
 #include "http2/frame.h"
 #include "http2/settings.h"
 #include "misc/default.h"
-#include "misc/system.h"
 
 const char HTTP2Preface[] = "PRI * HTTP/2.0\r\n\r\nSM\r\n\r\n";
 

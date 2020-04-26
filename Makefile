@@ -16,7 +16,6 @@ BINARIES = \
 	bin/misc/io.so \
 	bin/misc/options.so \
 	bin/misc/statistics.so \
-	bin/misc/system.so \
 	bin/redir/client.so \
 	bin/redir/server.so \
 
@@ -54,7 +53,6 @@ bin/core/h1.so: core/h1.c \
 bin/core/h2.so: core/h2.c \
 	core/h2.h \
 	core/security.h \
-	misc/system.h \
 	misc/default.h
 	$(CC) $(CFLAGS) -c -o $@ core/h2.c
 
@@ -89,10 +87,6 @@ bin/misc/options.so: misc/options.c \
 bin/misc/statistics.so: misc/statistics.c \
 	misc/statistics.h
 	$(CC) $(CFLAGS) -c -o $@ misc/statistics.c
-
-bin/misc/system.so: misc/system.c \
-	misc/system.h
-	$(CC) $(CFLAGS) -c -o $@ misc/system.c
 
 bin/redir/client.so: redir/client.c \
 	redir/server.h
