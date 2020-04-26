@@ -1,6 +1,11 @@
 CC = clang
 CFLAGS = -Wall -Wextra -Wpedantic -g -I.
-LDFLAGS = -pthread -lm `pkg-config --static --libs openssl libbrotlicommon libbrotlienc`
+LDFLAGS = -pthread -lm
+
+# Dependencies using pkg-config (OpenSSL, brotli)
+DEPENDENCIES = openssl libbrotlicommon libbrotlienc
+CFLAGS += `pkg-config --cflags $(DEPENDENCIES)`
+LDFLAGS += `pkg-config --static --libs $(DEPENDENCIES)`
 
 BINARIES = \
 	bin/base/global_state.so \
