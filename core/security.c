@@ -94,12 +94,15 @@ int CSSetupSecurityManager(void) {
 		return -2;
 	}
 
+/* LibreSSL doesn't have the 'SSL_CTX_set_ciphersuites' function */
+#if defined(TLS_MAX_VERSION) && TLS_MAX_VERSION == TLS1_3_VERSION
 	if (SSL_CTX_set_ciphersuites(SSLContext, OMSCipherSuites) == 0) {
 		puts(ANSI_COLOR_RED"E: Failed to set ciphersuites."ANSI_COLOR_RESETLN);
 		ERR_print_errors_fp(stderr);
 		CSDestroySecurityManager();
 		return -2;
 	}
+#endif
 
 	/* Set certificate file. */
 	if (SSL_CTX_use_certificate_file(SSLContext, OMSCertificateFile,
@@ -343,8 +346,12 @@ static const char *getErrorStr(int error) {
 		case SSL_ERROR_WANT_READ: return "SSL_ERROR_WANT_READ,SSL_ERROR_WANT_WRITE";
 		case SSL_ERROR_WANT_CONNECT: return "SSL_ERROR_WANT_CONNECT,SSL_ERROR_WANT_ACCEPT";
 		case SSL_ERROR_WANT_X509_LOOKUP: return "SSL_ERROR_WANT_X509_LOOKUP";
+#ifdef SSL_ERROR_WANT_ASYNC
 		case SSL_ERROR_WANT_ASYNC: return "SSL_ERROR_WANT_ASYNC";
+#endif
+#ifdef SSL_ERROR_WANT_ASYNC_JOB
 		case SSL_ERROR_WANT_ASYNC_JOB: return "SSL_ERROR_WANT_ASYNC_JOB";
+#endif
 		case SSL_ERROR_SYSCALL: return "SSL_ERROR_SYSCALL";
 		case SSL_ERROR_SSL: return "SSL_ERROR_SSL";
 		default: return "UNKNOWN TYPE?";
