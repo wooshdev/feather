@@ -65,7 +65,6 @@ void RSChildHandler(int sockfd) {
 		return;
 
 	/* skip method + space */
-	state = 2;
 	do {
 		ret = read(sockfd, path, 1);
 

@@ -655,5 +655,5 @@ int handleRequestStage2(CSSClient client, struct HTTPRequest *request,
 	ret = CSSWriteClient(client, result.data, result.size);
 	printf("CSSWriteClient written %zu octets!\n", result.size);
 
-	return 1;
+	return ret;
 }
