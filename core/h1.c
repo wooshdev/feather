@@ -28,7 +28,6 @@
 
 #include "h1.h"
 
-#include <bits/types/struct_tm.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
