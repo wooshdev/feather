@@ -240,7 +240,7 @@ int tryLoad(const char *fileName, struct FCVersion *version, const char *ext,
 	version->data = malloc(status.st_size);
 	if (version->data == NULL) {
 		fprintf(stderr, ANSI_COLOR_RED"[Cache::Compression::tryLoad] Failed to"
-				" allocate %zu octets for file '%s' on extension '%s'"
+				" allocate %zi octets for file '%s' on extension '%s'"
 				ANSI_COLOR_RESETLN, status.st_size, buf, ext);
 		close(fd);
 		return 0;
