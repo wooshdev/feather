@@ -1,6 +1,8 @@
+ADDITIONAL_CFLAGS =
+ADDITIONAL_LDFLAGS =
 CC = clang
-CFLAGS = -Wall -Wextra -Wpedantic -g -I.
-LDFLAGS = -pthread -lm
+CFLAGS = -Wall -Wextra -Wpedantic -g -I. $(ADDITIONAL_CFLAGS)
+LDFLAGS = -pthread -lm $(ADDITIONAL_LDFLAGS)
 
 # Dependencies using pkg-config (OpenSSL, brotli)
 DEPENDENCIES = openssl libbrotlicommon libbrotlienc
@@ -23,6 +25,8 @@ BINARIES = \
 	bin/misc/statistics.so \
 	bin/redir/client.so \
 	bin/redir/server.so \
+
+all: server
 
 server: main.c bin/dirinfo $(BINARIES)
 	$(CC) $(CFLAGS) -o $@ main.c $(BINARIES) $(LDFLAGS)
