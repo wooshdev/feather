@@ -63,13 +63,18 @@ int main(void) {
 
 	/* Setup Signal Catching */
 	memset(&act, 0, sizeof(struct sigaction));
-	sigemptyset(&act.sa_mask);
+	if (sigemptyset(&act.sa_mask) == -1) {
+		GSDestroy();
+		perror("[Main] sigemptyset() failed");
+		err(0, "[Main] Failed to set signal handler.");
+	}
   
 	act.sa_sigaction = CatchSignal;
 	act.sa_flags = SA_SIGINFO;
 
 	if (sigaction(SIGINT, &act, NULL) == -1 || sigaction(SIGPIPE, &act, NULL) == -1) {
 		GSDestroy();
+		perror("[Main] sigaction() failed");
 		err(0, "Failed to set signal handler.");
 	}
 
