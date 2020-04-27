@@ -46,6 +46,9 @@
 
 static void CatchSignal(int, siginfo_t *, void *);
 
+/* TODO Add some kind of stack of cleanup functions, because error checking is
+ * done very clunky and is prone to errors. */
+
 int main(void) {
 	pthread_attr_t attribs;
 	size_t currentCount;
@@ -98,8 +101,21 @@ int main(void) {
 	}
 
 	/* Start services. */
-	pthread_attr_init(&attribs);
-	pthread_attr_setdetachstate(&attribs, PTHREAD_CREATE_JOINABLE);
+	if (pthread_attr_init(&attribs) != 0) {
+		FCDestroy();
+		OMDestroy();
+		CSDestroySecurityManager();
+		GSDestroy();
+		err(0, "[Main] pthread_attr_init failed.");
+	}
+
+	if (pthread_attr_setdetachstate(&attribs, PTHREAD_CREATE_JOINABLE) != 0) {
+		FCDestroy();
+		OMDestroy();
+		CSDestroySecurityManager();
+		GSDestroy();
+		err(0, "[Main] pthread_attr_setdetachstate failed.");
+	}
 
 	GSRedirThreadState = 1;
 	if (pthread_create(&GSRedirThread, &attribs, &RSEntrypoint, NULL) != 0) {
@@ -119,7 +135,9 @@ int main(void) {
 		GSDestroy();
 		err(0, "Failed to start GSCoreThread.");
 	}
-	pthread_attr_destroy(&attribs);
+
+	if (pthread_attr_destroy(&attribs) != 0)
+		warn(0, "[Main] W: Failed to destroy thread attributes");
 
 	lastCount = 0;
 
