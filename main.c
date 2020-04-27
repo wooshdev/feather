@@ -50,8 +50,6 @@ int main(void) {
 	pthread_attr_t attribs;
 	size_t currentCount;
 	size_t lastCount;
-	struct rusage afterCache;
-	struct rusage beforeCache;
 	struct sigaction act;
 	struct timespec time;
 
@@ -91,7 +89,6 @@ int main(void) {
 		err(0, "Failed to setup the SecurityManager.");
 	}
 
-	getrusage(RUSAGE_SELF, &beforeCache);
 	/* Start cache */
 	if (!FCSetup()) {
 		OMDestroy();
@@ -124,7 +121,6 @@ int main(void) {
 	}
 	pthread_attr_destroy(&attribs);
 
-	time.tv_sec = 0;
 	lastCount = 0;
 
 	fputs("[Main] Initialization was "ANSI_COLOR_GREEN"succesful"
