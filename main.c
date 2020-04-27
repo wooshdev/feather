@@ -76,20 +76,20 @@ int main(void) {
 	if (sigaction(SIGINT, &act, NULL) == -1 || sigaction(SIGPIPE, &act, NULL) == -1) {
 		GSDestroy();
 		perror("[Main] sigaction() failed");
-		err(0, "Failed to set signal handler.");
+		err(EXIT_FAILURE, "Failed to set signal handler.");
 	}
 
 	/* Setup options/configuration */
 	if (!OMSetup()) {
 		GSDestroy();
-		err(0, "Failed to setup the OptionsManager.");
+		err(EXIT_FAILURE, "Failed to setup the OptionsManager.");
 	}
 
 	/* Start security */
 	if (CSSetupSecurityManager() <= 0) {
 		OMDestroy();
 		GSDestroy();
-		err(0, "Failed to setup the SecurityManager.");
+		err(EXIT_FAILURE, "Failed to setup the SecurityManager.");
 	}
 
 	/* Start cache */
@@ -97,7 +97,7 @@ int main(void) {
 		OMDestroy();
 		CSDestroySecurityManager();
 		GSDestroy();
-		err(0, "Failed to start GSRedirThread.");
+		err(EXIT_FAILURE, "Failed to start GSRedirThread.");
 	}
 
 	/* Start services. */
@@ -106,7 +106,7 @@ int main(void) {
 		OMDestroy();
 		CSDestroySecurityManager();
 		GSDestroy();
-		err(0, "[Main] pthread_attr_init failed.");
+		err(EXIT_FAILURE, "[Main] pthread_attr_init failed.");
 	}
 
 	if (pthread_attr_setdetachstate(&attribs, PTHREAD_CREATE_JOINABLE) != 0) {
@@ -114,7 +114,7 @@ int main(void) {
 		OMDestroy();
 		CSDestroySecurityManager();
 		GSDestroy();
-		err(0, "[Main] pthread_attr_setdetachstate failed.");
+		err(EXIT_FAILURE, "[Main] pthread_attr_setdetachstate failed.");
 	}
 
 	GSRedirThreadState = 1;
@@ -123,7 +123,7 @@ int main(void) {
 		OMDestroy();
 		CSDestroySecurityManager();
 		GSDestroy();
-		err(0, "Failed to start GSRedirThread.");
+		err(EXIT_FAILURE, "Failed to start GSRedirThread.");
 	}
 
 	GSCoreThreadState = 1;
@@ -133,11 +133,11 @@ int main(void) {
 		CSDestroySecurityManager();
 		pthread_cancel(GSRedirThread);
 		GSDestroy();
-		err(0, "Failed to start GSCoreThread.");
+		err(EXIT_FAILURE, "Failed to start GSCoreThread.");
 	}
 
 	if (pthread_attr_destroy(&attribs) != 0)
-		warn(0, "[Main] W: Failed to destroy thread attributes");
+		warn("[Main] W: Failed to destroy thread attributes.");
 
 	lastCount = 0;
 
