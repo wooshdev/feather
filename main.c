@@ -99,9 +99,6 @@ int main(void) {
 		GSDestroy();
 		err(0, "Failed to start GSRedirThread.");
 	}
-	getrusage(RUSAGE_SELF, &afterCache);
-	printf(ANSI_COLOR_MAGENTA"Cache actually uses %zu octets."ANSI_COLOR_RESETLN,
-		   afterCache.ru_maxrss * 1024L - beforeCache.ru_maxrss * 1024L);
 
 	/* Start services. */
 	pthread_attr_init(&attribs);
