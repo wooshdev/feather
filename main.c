@@ -44,7 +44,7 @@
 #include "misc/statistics.h"
 #include "redir/server.h"
 
-static void CatchSignal(int, siginfo_t *, void *);
+static void CatchSignal(int);
 
 /* TODO Add some kind of stack of cleanup functions, because error checking is
  * done very clunky and is prone to errors. */
@@ -70,8 +70,8 @@ int main(void) {
 		err(0, "[Main] Failed to set signal handler.");
 	}
   
-	act.sa_sigaction = CatchSignal;
-	act.sa_flags = SA_SIGINFO;
+	act.sa_handler = CatchSignal;
+	act.sa_flags = 0;
 
 	if (sigaction(SIGINT, &act, NULL) == -1 || sigaction(SIGPIPE, &act, NULL) == -1) {
 		GSDestroy();
@@ -175,10 +175,7 @@ int main(void) {
 	return EXIT_SUCCESS;
 }
 
-static void CatchSignal(int signo, siginfo_t *info, void *context) {
-	UNUSED(info);
-	UNUSED(context);
-
+static void CatchSignal(int signo) {
 	if (signo == SIGINT)
 		GSNotify(GSA_INTERRUPT);
 }
