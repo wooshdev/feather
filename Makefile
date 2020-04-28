@@ -29,7 +29,7 @@ BINARIES = \
 	bin/redir/client.so \
 	bin/redir/server.so \
 
-all: server
+all: server bin/tests/redir
 
 server: main.c bin/dirinfo $(BINARIES)
 	$(CC) $(CFLAGS) -o $@ main.c $(BINARIES) $(LDFLAGS)
@@ -45,6 +45,7 @@ bin/dirinfo:
 	@mkdir bin/http
 	@mkdir bin/misc
 	@mkdir bin/redir
+	@mkdir bin/tests
 
 bin/base/global_state.so: base/global_state.c \
 	base/global_state.h
@@ -110,6 +111,10 @@ bin/redir/client.so: redir/client.c \
 bin/redir/server.so: redir/server.c \
 	redir/server.h
 	$(CC) $(CFLAGS) -c -o $@ redir/server.c
+
+bin/tests/redir: tests/redir/main.c \
+	redir/client.h
+	$(CC) $(CFLAGS) -o $@ tests/redir/main.c
 
 # Destroys ALL build files, but will leave the source files intact.
 clean:
