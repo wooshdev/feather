@@ -197,8 +197,6 @@ void GSNotify(enum GSAction action) {
 
 int GSScheduleChildThread(enum GSThreadParent parent,
 						  void *(*routine) (void *), int sockfd) {
-	char *buf;
-	size_t i;
 	int	state;
 	struct GSThread *thread;
 
@@ -207,6 +205,8 @@ int GSScheduleChildThread(enum GSThreadParent parent,
 
 	pthread_mutex_lock(&GSChildMutex);
 	{
+		size_t i;
+
 		for (i = 0; i < GSChildSize; i++) {
 			thread = &GSChildThreads[i];
 			if (!thread->state)
@@ -227,6 +227,8 @@ int GSScheduleChildThread(enum GSThreadParent parent,
 
 	state = pthread_create(&thread->thread, NULL, routine, thread);
 	if (state != 0) {
+		char *buf;
+
 		buf = malloc(256);
 		if (buf != NULL) {
 			strerror_r(state, buf, 256);
