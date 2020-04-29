@@ -42,14 +42,18 @@ struct Test {
 	const char *name;
 };
 
-bool Test1(void);
+bool TestUsual(void);
+bool TestShort(void);
+bool TestHTTP0_9(void);
 bool PayloadTest(const void *, size_t, void *, size_t);
 
 int main(void) {
 	size_t i;
 
 	struct Test tests[] = {
-		{ Test1, "Test1" }
+		{ TestUsual, "UsualRequest" },
+		{ TestShort, "ShortRequest" },
+		{ TestHTTP0_9, "HTTP/0.9" },
 	};
 
 	for (i = 0; i < sizeof(tests) / sizeof(tests[0]); i++) {
@@ -76,8 +80,8 @@ int main(void) {
 	return EXIT_SUCCESS;
 }
 
-bool Test1(void) {
-	const unsigned char payload[] = 
+bool TestUsual(void) {
+	const unsigned char payload[] =
 		"GET / HTTP/1.1\r\n"
 		"Host: localhost\r\n"
 		"\r\n";
@@ -85,7 +89,29 @@ bool Test1(void) {
 	unsigned char result[128];
 
 	/* Yes, - sizeof(payload[0]) is intended; it removes the NULL character */
-	return PayloadTest(payload, sizeof(payload) - sizeof(payload[0]), 
+	return PayloadTest(payload, sizeof(payload) - sizeof(payload[0]),
+					   result, 128);
+}
+
+bool TestShort(void) {
+	const unsigned char payload[] =
+		"GET / HTTP/1.1\r\n"
+		"\r\n";
+
+	unsigned char result[128];
+
+	/* Yes, - sizeof(payload[0]) is intended; it removes the NULL character */
+	return PayloadTest(payload, sizeof(payload) - sizeof(payload[0]),
+					   result, 128);
+}
+
+bool TestHTTP0_9(void) {
+	const unsigned char payload[] = "GET / HTTP/1.1\r\n";
+
+	unsigned char result[128];
+
+	/* Yes, - sizeof(payload[0]) is intended; it removes the NULL character */
+	return PayloadTest(payload, sizeof(payload) - sizeof(payload[0]),
 					   result, 128);
 }
 
