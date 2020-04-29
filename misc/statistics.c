@@ -64,8 +64,6 @@ void SMBegin(void) {
 
 void SMEnd(void) {
 	clock_t endTime;
-	size_t timeBetween;
-	size_t amount;
 	int hasPrinted; /* boolean */
 
 	endTime = clock();
@@ -77,6 +75,8 @@ void SMEnd(void) {
 	if (MSBeginTime == -1)
 		puts("error (begin time was 0)"ANSI_COLOR_RESET);
 	else {
+		size_t amount, timeBetween;
+
 		/* XSI requires that CLOCKS_PER_SEC is equal to 1e6, which pratically
 		 * makes clock() return microseconds */
 		timeBetween = (endTime - MSBeginTime) / 1000; /* is now milliseconds */
@@ -125,7 +125,6 @@ void SMEnd(void) {
 
 		if (timeBetween > 0) {
 			amount = timeBetween;
-			timeBetween -= amount;
 			printf("%s%zu millisecond%s", (hasPrinted ? ", " : ""), amount,
 				   (amount == 1 ? "" : "s"));
 			hasPrinted = 1;
@@ -135,10 +134,8 @@ void SMEnd(void) {
 		timeBetween %= 1000;
 		if (timeBetween > 0) {
 			amount = timeBetween;
-			timeBetween -= amount;
 			printf("%s%zu microsecond%s", (hasPrinted ? ", " : ""), amount,
 				   (amount == 1 ? "" : "s"));
-			hasPrinted = 1;
 		}
 
 		puts(ANSI_COLOR_RESET);
