@@ -39,22 +39,21 @@
 #include <time.h>
 #include <unistd.h>
 
+#include "redir/client.h"
+
+typedef enum { FALSE, TRUE } bool;
+
 struct Test {
-	int (*function)(int);
+	bool (*function)(void);
 	const char *name;
 };
 
-int Test1(int);
+bool Test1(void);
+bool PayloadTest(const void *, size_t, void *, size_t);
 
 int main(void) {
-	int fd[2];
 	size_t i;
-	int ret;
-
-	if (socketpair(PF_LOCAL, SOCK_STREAM, 0, fd) == -1) {
-		perror("E: socketpair() failure");
-		return EXIT_FAILURE;
-	}
+	bool ret;
 
 	struct Test tests[] = {
 		{ Test1, "Test1" }
@@ -62,36 +61,114 @@ int main(void) {
 
 	for (i = 0; i < sizeof(tests) / sizeof(tests[0]); i++) {
 		printf("Running test %s...", tests[i].name);
-		ret = tests[i].function(0);
+		ret = tests[i].function();
 
-		if (ret) {
+		if (ret)
 			puts("ok");
-		} else {
-			puts("failure");
+		else {
+			printf("\rRunning test %s...failed", tests[i].name);
+			close(2);
+			close(1);
+			close(0);
 			return EXIT_FAILURE;
 		}
 	}
 
-	uint8_t buf0[2];
-	uint8_t buf1[2];
-	buf0[0] = '\0';
-	buf1[0] = '\0';
-
-	printf("write[0]: %zi\n", write(fd[0], "OK", 3));
-	printf("write[1]: %zi\n", write(fd[1], "NO", 3));
-	printf("read[0]: %zi\n", read(fd[0], buf0, 3));
-	printf("read[1]: %zi\n", read(fd[1], buf1, 3));
-	
-	printf("buf0: %s\nbuf1: %s\n", buf0, buf1);
-
-	close(fd[0]);
-	close(fd[1]);
+	close(2);
+	close(1);
+	close(0);
 
 	return EXIT_SUCCESS;
 }
 
-int Test1(int sockfd) {
-	(void)(sockfd);
+bool Test1(void) {
+	const unsigned char payload[] = 
+		"GET / HTTP/1.1\r\n"
+		"Host: localhost\r\n"
+		"\r\n";
+
+	unsigned char result[128];
+
+	/* Yes, - sizeof(payload[0]) is intended; it removes the NULL character */
+	return PayloadTest(payload, sizeof(payload) - sizeof(payload[0]), 
+					   result, 128);
+}
+
+bool PayloadTest(const void *inBuf, size_t inBufSize, void *outBuf,
+				 size_t outBufSize) {
+	int fd[2];
+	/* fd[0] is for our simulated remote endpoint; the client
+	 * fd[1] is for our simulated local endpoint; the server
+	 */
+
+	const uint8_t *buf;
+	size_t len;
+	unsigned char *result;
+	ssize_t ret;
+
+	buf = inBuf;
+	result = outBuf;
+
+	/* Setup communication */
+	if (socketpair(PF_LOCAL, SOCK_STREAM, 0, fd) == -1) {
+		perror("[PayloadTest] Error: socketpair() failure");
+		return 0;
+	}
+
+	/* Write payload */
+	len = inBufSize;
+	do {
+		ret = write(fd[0], buf, len);
+		if (ret == -1) {
+			perror("[PayloadTest] Failed to write payload");
+			close(fd[0]);
+			close(fd[1]);
+			return 0;
+		}
+
+		buf += ret;
+		len -= ret;
+	} while (len != 0);
+
+	/* Execute */
+	RSChildHandler(fd[1]);
+
+	/* Check result */
+	/* Example: "HTTP/1.1 301 Moved Permanently" */
+	ret = read(fd[0], result, outBufSize);
+
+	if (ret < 13) {
+		fprintf(stderr, "[PayloadTest] [Error] Malformed Response! read() "
+				"retval: %zi\n", ret);
+		close(fd[0]);
+		close(fd[1]);
+		return 0;
+	}
+
+	/* Check if status wasn't a 3xx code */
+	if (result[9] != '3') {
+		unsigned char buf[4];
+		buf[0] = result[9];
+		buf[1] = result[10];
+		buf[2] = result[11];
+		buf[3] = '\0';
+		
+		fprintf(stderr, "[PayloadTest] [Error] Non 3xx status code! Status "
+				"code was '%s'\n", buf);
+		close(fd[0]);
+		close(fd[1]);
+		return 0;
+	}
+
+	/* Clean Up */
+	ret = close(fd[1]);
+	if (ret == -1) {
+		fputs("[PayloadTest] [Error] RSChildHandler isn't supposed to close "
+			  "the socket!\n", stderr);
+		return 0;
+	}
+
+	close(fd[0]);
 
 	return 1;
 }
