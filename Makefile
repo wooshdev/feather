@@ -141,6 +141,4 @@ memory:
 # the 'cppcheck' target will invoke the cppcheck program. This program 
 # statically analyzes the code.
 cppcheck:
-	cppcheck --enable=all .
-
-
+	cppcheck -I. -q --std=c99 --enable=all .
