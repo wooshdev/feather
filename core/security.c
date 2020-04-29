@@ -313,6 +313,7 @@ static int alpnHandler(SSL *ssl, const unsigned char **out,
 			return SSL_TLSEXT_ERR_OK;
 		}
 #endif
+		pos += size;
 	}
 
 	if (wasHTTP1Found) {
