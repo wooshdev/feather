@@ -104,7 +104,7 @@ bool PayloadTest(const void *inBuf, size_t inBufSize, void *outBuf,
 
 	const uint8_t *buf;
 	size_t len;
-	unsigned char *result;
+	char *result;
 	ssize_t ret;
 
 	buf = inBuf;
