@@ -57,9 +57,6 @@ enum CSProtocol
 CSSGetProtocol(CSSClient);
 
 int
-CSSPeekClient(CSSClient, size_t);
-
-int
 CSSReadClient(CSSClient, char *, size_t); 
 
 int
