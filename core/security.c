@@ -229,9 +229,9 @@ int CSSSetupClient(int sockfd, CSSClient *client) {
 
 /* TODO this implementation is blocking */
 int CSSWriteClient(CSSClient client, const char *buf, size_t len) {
-	ssize_t ret;
-
 	do {
+		ssize_t ret;
+
 		ret = SSL_write(client, buf, len);
 
 		if (ret <= 0) {
@@ -258,9 +258,9 @@ int CSSWriteClient(CSSClient client, const char *buf, size_t len) {
 }
 
 int CSSReadClient(CSSClient client, char *buf, size_t len) {
-	ssize_t ret;
-
 	do {
+		ssize_t ret;
+
 		ret = SSL_read(client, buf, len);
 
 		if (ret <= 0)
