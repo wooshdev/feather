@@ -459,7 +459,6 @@ int recoverError(CSSClient client, enum HTTPError error,
 	 */
 	free(request->headers);
 	free(request);
-	request = NULL;
 
 	/* TODO Create a 'personalized' error message for each error. */
 	const char document[] = 
