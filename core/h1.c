@@ -127,13 +127,15 @@ int writeResponse(CSSClient);
 
 void CSHandleHTTP1(CSSClient client) {
 	int status;
-	clock_t after;
-	clock_t before;
 
 	do {
+		clock_t after;
+		clock_t before;
+
 		before = clock();
 		status = handleRequest(client);
 		after = clock();
+
 		printf("handleRequest> took %f ms\n", (after - before)*1e3/CLOCKS_PER_SEC);
 	} while(status);
 }
@@ -403,11 +405,11 @@ int handleRequest(CSSClient client) {
 		(size_t) 1e6 / CLOCKS_PER_SEC),
 		(size_t) ((timings.handling.after - timings.handling.before) * 
 		(size_t) 1e6 / CLOCKS_PER_SEC),
-		(timings.flags & TF_CLIENT_CACHED ? ANSI_COLOR_BLUE";"ANSI_COLOR_YELLOW
-			" client-cached" : ""),
-		(timings.flags & TF_COMPRESSED ? ANSI_COLOR_BLUE";"ANSI_COLOR_YELLOW
+		((timings.flags & TF_CLIENT_CACHED) ? ANSI_COLOR_BLUE";"
+			ANSI_COLOR_YELLOW " client-cached" : ""),
+		((timings.flags & TF_COMPRESSED) ? ANSI_COLOR_BLUE";"ANSI_COLOR_YELLOW
 			" compressed" : ""),
-		(timings.flags & TF_NOT_FOUND ? ANSI_COLOR_BLUE";"ANSI_COLOR_YELLOW
+		((timings.flags & TF_NOT_FOUND) ? ANSI_COLOR_BLUE";"ANSI_COLOR_YELLOW
 			" not-found" : "")
 	);
 
