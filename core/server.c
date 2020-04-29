@@ -71,6 +71,7 @@ void *CSChildEntrypoint(void *threadParameter) {
 				break;
 			case CSPROT_NONE:
 				puts("CSPROT_NONE");
+				CSHandleHTTP1(client);
 				break;
 		}
 
