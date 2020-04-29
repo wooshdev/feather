@@ -145,7 +145,6 @@ int trySave(const char *fileName, struct FCVersion *version, const char *ext) {
 	int fd;
 	const char *writeBuf;
 	size_t len;
-	ssize_t ret;
 
 	cacheLocationSize = strlen(OMCacheLocation);
 	extSize = strlen(ext);
@@ -181,6 +180,8 @@ int trySave(const char *fileName, struct FCVersion *version, const char *ext) {
 	writeBuf = version->data;
 	len = version->size;
 	do {
+		ssize_t ret;
+
 		ret = write(fd, writeBuf, len);
 		if (ret == -1) {
 			close(fd);
@@ -205,7 +206,6 @@ int tryLoad(const char *fileName, struct FCVersion *version, const char *ext,
 	int fd;
 	char *readBuf;
 	size_t len;
-	ssize_t ret;
 	struct stat status;
 
 	cacheLocationSize = strlen(OMCacheLocation);
@@ -252,6 +252,8 @@ int tryLoad(const char *fileName, struct FCVersion *version, const char *ext,
 	len = version->size;
 	readBuf = version->data;
 	do {
+		ssize_t ret;
+
 		ret = read(fd, readBuf, len);
 
 		if (ret == 0)
