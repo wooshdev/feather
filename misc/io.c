@@ -55,7 +55,6 @@ int IOCreateSocket(uint16_t port, int nonBlocking) {
 	struct sockaddr_in addr;
 	int flag;
 	int sockfd;
-	int status;
 
 	addr.sin_family = AF_INET;
 	addr.sin_port = htons(port);
@@ -73,6 +72,8 @@ int IOCreateSocket(uint16_t port, int nonBlocking) {
 	}
 
 	if (nonBlocking) {
+		int status;
+
 		flag = fcntl(sockfd, F_GETFL);
 		if (flag == -1) {
 			perror("IOCreateSocket fcntl_get");

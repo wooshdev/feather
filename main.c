@@ -52,7 +52,6 @@ static void CatchSignal(int);
 
 int main(void) {
 	pthread_attr_t attribs;
-	size_t currentCount;
 	size_t lastCount;
 	struct sigaction act;
 	struct timespec time;
@@ -147,6 +146,8 @@ int main(void) {
 		  ANSI_COLOR_RESET".\n", stdout);
 
 	while (GSMainLoop) {
+		size_t currentCount;
+
 		time.tv_sec = 1;
 		time.tv_nsec = 0;
 		nanosleep(&time, NULL);

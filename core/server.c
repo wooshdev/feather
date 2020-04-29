@@ -85,9 +85,10 @@ void *CSChildEntrypoint(void *threadParameter) {
 
 void *CSEntrypoint(void *threadParameter) {
 	UNUSED(threadParameter);
-	int sockfd;
 
 	while (GSMainLoop) {
+		int sockfd;
+
 		sockfd = accept(GSCoreSocket, NULL, 0);
 
 		if (sockfd == -1) {
