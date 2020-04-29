@@ -29,9 +29,14 @@
 #include "statistics.h"
 
 #include <pthread.h>
+#include <stdio.h>
+#include <time.h>
+
+#include "misc/default.h"
 
 static pthread_mutex_t MSTrafficMutex = PTHREAD_MUTEX_INITIALIZER;
 static size_t MSTrafficCount = 0;
+static clock_t MSBeginTime = -1;
 
 size_t SMGetPageTraffic(void) {
 	size_t result;
@@ -51,4 +56,91 @@ void SMNotifyRequest(void) {
 		MSTrafficCount += 1;
 	}
 	pthread_mutex_unlock(&MSTrafficMutex);
+}
+
+void SMBegin(void) {
+	MSBeginTime = clock();
+}
+
+void SMEnd(void) {
+	clock_t endTime;
+	size_t timeBetween;
+	size_t amount;
+	int hasPrinted; /* boolean */
+
+	endTime = clock();
+	hasPrinted = 0;
+
+	printf(ANSI_COLOR_CYAN"Traffic> "ANSI_COLOR_GREY"Got %zu requests.\n"
+		   ANSI_COLOR_MAGENTA"Uptime> "ANSI_COLOR_GREY, SMGetPageTraffic());
+
+	if (MSBeginTime == -1)
+		puts("error (begin time was 0)"ANSI_COLOR_RESET);
+	else {
+		/* XSI requires that CLOCKS_PER_SEC is equal to 1e6, which pratically
+		 * makes clock() return microseconds */
+		timeBetween = (endTime - MSBeginTime) / 1000; /* is now milliseconds */
+
+		fputs("Ran for ", stdout);
+
+		if (timeBetween > 6048e6) {
+			amount = timeBetween / 6048e6;
+			timeBetween -= amount * 6048e6;
+			printf("%s%zu week%s", (hasPrinted ? ", " : ""), amount,
+				   (amount == 1 ? "" : "s"));
+			hasPrinted = 1;
+		}
+
+		if (timeBetween > 864e6) {
+			amount = timeBetween / 36e5;
+			timeBetween -= amount * 36e5;
+			printf("%s%zu day%s", (hasPrinted ? ", " : ""), amount,
+				   (amount == 1 ? "" : "s"));
+			hasPrinted = 1;
+		}
+
+		if (timeBetween > 36e5) {
+			amount = timeBetween / 36e5;
+			timeBetween -= amount * 36e5;
+			printf("%s%zu hour%s", (hasPrinted ? ", " : ""), amount,
+				   (amount == 1 ? "" : "s"));
+			hasPrinted = 1;
+		}
+
+		if (timeBetween > 6e4) {
+			amount = timeBetween / 6e4;
+			timeBetween -= amount * 6e4;
+			printf("%s%zu minute%s", (hasPrinted ? ", " : ""), amount,
+				   (amount == 1 ? "" : "s"));
+			hasPrinted = 1;
+		}
+
+		if (timeBetween > 1e3) {
+			amount = timeBetween / 1e3;
+			timeBetween -= amount * 1e3;
+			printf("%s%zu second%s", (hasPrinted ? ", " : ""), amount,
+				   (amount == 1 ? "" : "s"));
+			hasPrinted = 1;
+		}
+
+		if (timeBetween > 0) {
+			amount = timeBetween;
+			timeBetween -= amount;
+			printf("%s%zu millisecond%s", (hasPrinted ? ", " : ""), amount,
+				   (amount == 1 ? "" : "s"));
+			hasPrinted = 1;
+		}
+
+		timeBetween = endTime - MSBeginTime;
+		timeBetween %= 1000;
+		if (timeBetween > 0) {
+			amount = timeBetween;
+			timeBetween -= amount;
+			printf("%s%zu microsecond%s", (hasPrinted ? ", " : ""), amount,
+				   (amount == 1 ? "" : "s"));
+			hasPrinted = 1;
+		}
+
+		puts(ANSI_COLOR_RESET);
+	}
 }

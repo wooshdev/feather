@@ -397,10 +397,10 @@ void calculateUsage(void) {
 		 ANSI_COLOR_MAGENTA"FileCache Usage"
 		 ANSI_COLOR_BLUE" =======");
 	printf(ANSI_COLOR_BLUE"Total Objects:\t"
-		   ANSI_COLOR_MAGENTA"%zu\n",
+		   ANSI_COLOR_GREY"%zu\n",
 		   totalObjects);
 	fputs(ANSI_COLOR_BLUE"Total Memory:\t"
-		  ANSI_COLOR_MAGENTA, stdout);
+		  ANSI_COLOR_GREY, stdout);
 
 	/* IMO, the following is ugly code, but it is what it is. */
 	if (totalOctets == 0)

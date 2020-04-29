@@ -142,6 +142,7 @@ int main(void) {
 
 	lastCount = 0;
 
+	SMBegin();
 	fputs("[Main] Initialization was "ANSI_COLOR_GREEN"succesful"
 		  ANSI_COLOR_RESET".\n", stdout);
 
@@ -157,7 +158,10 @@ int main(void) {
 		}
 	}
 
-	printf(ANSI_COLOR_CYAN"Traffic> Total was "ANSI_COLOR_MAGENTA"%zu"ANSI_COLOR_RESETLN, SMGetPageTraffic());
+	/* Newline for ^C */
+	putchar('\n');
+
+	SMEnd();
 
 	GSDestroy();
 
