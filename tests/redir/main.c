@@ -53,13 +53,14 @@ bool PayloadTest(const void *, size_t, void *, size_t);
 
 int main(void) {
 	size_t i;
-	bool ret;
 
 	struct Test tests[] = {
 		{ Test1, "Test1" }
 	};
 
 	for (i = 0; i < sizeof(tests) / sizeof(tests[0]); i++) {
+		bool ret;
+
 		printf("Running test %s...", tests[i].name);
 		ret = tests[i].function();
 
@@ -147,14 +148,14 @@ bool PayloadTest(const void *inBuf, size_t inBufSize, void *outBuf,
 
 	/* Check if status wasn't a 3xx code */
 	if (result[9] != '3') {
-		unsigned char buf[4];
-		buf[0] = result[9];
-		buf[1] = result[10];
-		buf[2] = result[11];
-		buf[3] = '\0';
+		unsigned char debugInfo[4];
+		debugInfo[0] = result[9];
+		debugInfo[1] = result[10];
+		debugInfo[2] = result[11];
+		debugInfo[3] = '\0';
 		
 		fprintf(stderr, "[PayloadTest] [Error] Non 3xx status code! Status "
-				"code was '%s'\n", buf);
+				"code was '%s'\n", debugInfo);
 		close(fd[0]);
 		close(fd[1]);
 		return 0;
