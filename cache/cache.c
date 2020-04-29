@@ -162,13 +162,13 @@ int followDirectory(const char *name, int indent) {
 
 	while ((entry = readdir(dir)) != NULL) {
 		if (entry->d_type == DT_DIR) {
-			char path[1024];
+			char pathBuffer[1024];
 			if (strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0)
 				continue;
 
-			snprintf(path, sizeof(path), "%s/%s", name, entry->d_name);
+			snprintf(pathBuffer, sizeof(pathBuffer), "%s/%s", name, entry->d_name);
 
-			if (!followDirectory(path, indent + 2)) {
+			if (!followDirectory(pathBuffer, indent + 2)) {
 				closedir(dir);
 				return 0;
 			}
@@ -252,9 +252,10 @@ int FCLookup(const char *path, struct FCResult *result, enum FCFlags flags) {
 }
 
 void FCDestroy(void) {
-	size_t i;
 
 	if (fcCount != 0) {
+		size_t i;
+
 		for (i = 0; i < fcCount; i++) {
 			free(fcEntries[i]->uncompressed.data);
 			free(fcEntries[i]->br.data);
@@ -275,7 +276,6 @@ int setFileContents(const char *file, const char *fileNameAbsolute,
 	char *buf;
 	int fd;
 	off_t len;
-	ssize_t ret;
 	struct stat status;
 
 	fd = open(file, O_RDONLY);
@@ -305,6 +305,8 @@ int setFileContents(const char *file, const char *fileNameAbsolute,
 	len = status.st_size;
 	buf = entry->uncompressed.data;
 	do {
+		ssize_t ret;
+
 		ret = read(fd, buf, len);
 		if (ret == 0)
 			break;
@@ -373,7 +375,6 @@ void guessMediaProperties(const char *file, struct FCEntry *entry) {
 }
 
 void calculateUsage(void) {
-	struct FCEntry *entry;
 	size_t i;
 	size_t totalOctets;
 	size_t totalObjects;
@@ -383,6 +384,8 @@ void calculateUsage(void) {
 	totalOctets = 0;
 
 	for (i = 0; i < fcCount; i++) {
+		struct FCEntry *entry;
+
 		entry = fcEntries[i];
 		if (entry->br.size > 0)
 			totalObjects += 1;
