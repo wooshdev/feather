@@ -51,7 +51,6 @@ static int ReadPath(int, char *);
 void RSChildHandler(int sockfd) {
 	char *date;
 	char *path;
-	ssize_t ret;
 	ssize_t state;
 
 	if (!IOTimeoutAvailableData(sockfd, 10000)) {
@@ -65,9 +64,11 @@ void RSChildHandler(int sockfd) {
 
 	/* skip method + space */
 	do {
+		ssize_t ret;
+
 		ret = read(sockfd, path, 1);
 
-		if (ret == -1 || ret != 1) {
+		if (ret != 1) {
 			state = -1;
 			break;
 		}
@@ -108,12 +109,12 @@ void RSChildHandler(int sockfd) {
 }
 
 static int ReadPath(int sockfd, char *buf) {
-	ssize_t ret;
-
 	do {
+		ssize_t ret;
+
 		ret = read(sockfd, buf, 1);
 
-		if (ret == -1 || ret != 1)
+		if (ret != 1)
 			return 0;
 
 		if (buf[0] == ' ') {

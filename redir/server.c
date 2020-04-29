@@ -52,9 +52,10 @@ void *RSChildEntrypoint(void *threadParameter) {
 
 void *RSEntrypoint(void *threadParameter) {
 	UNUSED(threadParameter);
-	int sockfd;
 
 	while (GSMainLoop) {
+		int sockfd;
+
 		sockfd = accept(GSRedirSocket, NULL, 0);
 
 		if (sockfd == -1) {
