@@ -77,8 +77,6 @@ void GSDestroy(void) {
 	size_t i;
 	struct timespec time;
 
-	puts("DEBUG: GSDestroy() called.");
-
 	/* Send signal to threads */
 	pthread_mutex_lock(&GSChildMutex);
 	for (i = 0; i < GSChildSize; i++)
@@ -115,10 +113,6 @@ void GSDestroy(void) {
 		close(GSCoreSocket);
 		GSCoreSocket = -1;
 	}
-
-	fclose(stdin);
-	fclose(stdout);
-	fclose(stderr);
 }
 
 static void GSPopulateHostName(void) {
