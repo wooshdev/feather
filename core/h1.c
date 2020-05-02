@@ -28,20 +28,21 @@
 
 #include "h1.h"
 
+#include <sys/time.h>
+
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <strings.h>
-#include <sys/time.h>
-#include <time.h>
-#include "core/security.h"
-#include "http/strings.h"
-
 #include <string.h>
+#include <strings.h>
+#include <time.h>
 
+#include "base/global_state.h"
 #include "cache/cache.h"
+#include "core/security.h"
 #include "core/timings.h"
 #include "misc/default.h"
+#include "http/strings.h"
 #include "http/syntax.h"
 
 /**
@@ -104,7 +105,7 @@ static const char messageFormat[] =
 	"Date: %s\r\n"
 	"%s"
 	"Referrer-Policy: no-referrer\r\n"
-	"Server: WFS\r\n"
+	"Server: %s\r\n"
 	"Strict-Transport-Security: max-age=31536000\r\n"
 	"X-Content-Type-Options: nosniff\r\n"
 	"\r\n";
@@ -114,7 +115,7 @@ static const char messageNotModified[] =
 	"Connection: keep-alive\r\n"
 	"Date: %s\r\n"
 	"Referrer-Policy: no-referrer\r\n"
-	"Server: WFS\r\n"
+	"Server: %s\r\n"
 	"Strict-Transport-Security: max-age=31536000\r\n"
 	"X-Content-Type-Options: nosniff\r\n"
 	"\r\n";
@@ -489,6 +490,7 @@ int recoverError(CSSClient client, enum HTTPError error,
 		sizeof(encoding) / sizeof(encoding[0]) - 1 +
 		DOCUMENT_SIZE_CHARACTER_SIZE +
 		sizeof(mediaType) / sizeof(mediaType[0]) - 1 +
+		strlen(GSServerProductName) +
 		1
 	);
 
@@ -503,7 +505,8 @@ int recoverError(CSSClient client, enum HTTPError error,
 		sizeof(document) / sizeof(document[0]) - 1,
 		mediaType,
 		date,
-		""
+		"",
+		GSServerProductName
 	);
 
 	ret = CSSWriteClient(client, buf, formattedBufSize);
@@ -602,14 +605,15 @@ int handleRequestStage2(CSSClient client, struct HTTPRequest *request,
 	if (isUnchanged) {
 		timings->flags |= TF_CLIENT_CACHED;
 
-		buf = malloc(strlen(messageNotModified) + strlen(date) + 1);
+		buf = malloc(strlen(messageNotModified) + strlen(date) + 
+					 strlen(GSServerProductName) + 1);
 		if (!buf) {
 			perror("Allocation failure");
 			return 0;
 		}
 
-		formattedBufSize = sprintf(buf, messageNotModified, date);
-		
+		formattedBufSize = sprintf(buf, messageNotModified, date, 
+								   GSServerProductName);
 		ret = CSSWriteClient(client, buf, formattedBufSize);
 		free(buf);
 		return ret;
@@ -630,6 +634,7 @@ int handleRequestStage2(CSSClient client, struct HTTPRequest *request,
 		strlen(mediaInfo) + 
 		strlen(date) + 
 		strlen(dateLastModified) + 
+		strlen(GSServerProductName) +
 		1
 	);
 
@@ -644,7 +649,8 @@ int handleRequestStage2(CSSClient client, struct HTTPRequest *request,
 		result.size,
 		mediaInfo,
 		date,
-		dateLastModified
+		dateLastModified,
+		GSServerProductName
 	);
 
 	ret = CSSWriteClient(client, buf, formattedBufSize);

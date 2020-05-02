@@ -33,6 +33,9 @@
 #include <stdlib.h>
 #include <string.h>
 
+/* Secure/recommended value by default: none */
+enum OSILevel OMGSSystemInformationInServerHeader = OSIL_NONE;
+
 const char	*OMSCertificateFile;
 const char	*OMSCertificateChainFile;
 const char	*OMSCertificatePrivateKeyFile;
