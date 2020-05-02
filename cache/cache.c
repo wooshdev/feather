@@ -120,6 +120,8 @@ int addFile(const char *directory, const char *fileName) {
 			free(fcNames);
 			free(entry);
 			free(name);
+			fcEntries = NULL;
+			fcNames = NULL;
 			return 0;
 		}
 		fcEntries = newEntries;
@@ -133,6 +135,8 @@ int addFile(const char *directory, const char *fileName) {
 			free(fcEntries);
 			free(entry);
 			free(name);
+			fcEntries = NULL;
+			fcNames = NULL;
 			return 0;
 		}
 		fcNames = newNames;
