@@ -131,6 +131,10 @@ static void GSPopulateHostName(void) {
 	if ((gai_result = getaddrinfo(GSServerHostNameInternal, "http", &hints,
 								  &info)) != 0) {
 		fprintf(stderr, "getaddrinfo: %s\n", gai_strerror(gai_result));
+		fputs(ANSI_COLOR_RED "[GlobalState] Requesting the address information"
+			  "failed. This most likely occurred to your hostname not looping"
+			  "back to your domain. Check your DNS settings or change your '"
+			  "/etc/hosts' file.", stderr);
 		exit(1);
 	}
 
