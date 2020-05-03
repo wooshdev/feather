@@ -30,6 +30,7 @@
 #include <sys/time.h>
 
 #include <err.h>
+#include <errno.h>
 #include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -56,6 +57,7 @@ static void StopWithError(const char *, const char *);
 int main(void) {
 	pthread_attr_t attribs;
 	size_t lastCount;
+	int ret;
 	struct sigaction act;
 	struct timespec time;
 
@@ -144,6 +146,17 @@ int main(void) {
 	SMEnd();
 
 	GSDestroy();
+
+	/* Send signal to stop */
+	ret = pthread_kill(GSCoreThread, SIGINT);
+	if (ret != 0 && ret != ESRCH)
+		fprintf(stderr, ANSI_COLOR_RED"[Main] [ShutdownProcedure] E: "
+			   "CoreThreadKill=%i"ANSI_COLOR_RESETLN, ret);
+
+	ret = pthread_kill(GSRedirThread, SIGINT);
+	if (ret != 0 && ret != ESRCH)
+		fprintf(stderr, ANSI_COLOR_RED"[Main] [ShutdownProcedure] E: "
+			   "RedirThreadKill=%i"ANSI_COLOR_RESETLN, ret);
 
 	/* Stop threads */
 	time.tv_nsec = 100000000; /* 100 ms */

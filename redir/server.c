@@ -29,6 +29,7 @@
 #include "server.h"
 
 #include <errno.h>
+#include <poll.h>
 #include <sched.h>
 #include <stddef.h>
 #include <stdio.h>
@@ -53,8 +54,27 @@ void *RSChildEntrypoint(void *threadParameter) {
 void *RSEntrypoint(void *threadParameter) {
 	UNUSED(threadParameter);
 
+	struct pollfd pollInfo;
+	pollInfo.fd = GSRedirSocket;
+
 	while (GSMainLoop) {
+		int ret;
 		int sockfd;
+
+		pollInfo.events = POLLIN;
+		pollInfo.revents = 0;
+
+		ret = poll(&pollInfo, 1, -1);
+
+		if (ret < 0) {
+			perror(ANSI_COLOR_RED"[RedirService] poll failed"ANSI_COLOR_RESET);
+			break;
+		} else if (ret == 0)
+			continue;
+
+		/* The socket was closed: */
+		if (pollInfo.revents == POLLNVAL)
+			break;
 
 		sockfd = accept(GSRedirSocket, NULL, 0);
 
@@ -63,6 +83,9 @@ void *RSEntrypoint(void *threadParameter) {
 				errno == EWOULDBLOCK ||
 				errno == ECONNABORTED
 			) {
+				fputs(ANSI_COLOR_RED
+					  "[RedirService] Poll success but accept() failed."
+					  ANSI_COLOR_RESETLN, stderr);
 				if (sched_yield() == -1) {
 					perror(ANSI_COLOR_RED
 						   "[RedirService] sched_yield() failed"
@@ -71,9 +94,15 @@ void *RSEntrypoint(void *threadParameter) {
 				continue;
 			}
 
+			/* The socket was closed: */
+			if (errno == EBADF)
+				break;
+
 			perror(ANSI_COLOR_RED
 				   "[RedirService] [CRITICAL] Socket I/O error occurred"
 				   ANSI_COLOR_RESET);
+
+			printf("errno was %i\n", errno);
 			break;
 		}
 
@@ -89,6 +118,6 @@ void *RSEntrypoint(void *threadParameter) {
 			break;
 		}
 	}
-	
+
 	return NULL;
 }
