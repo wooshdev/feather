@@ -40,16 +40,7 @@
 #include "misc/default.h"
 #include "client.h"
 
-void *RSChildEntrypoint(void *threadParameter) {
-	struct GSThread *thread = threadParameter;
-
-	RSChildHandler(thread->sockfd);
-	close(thread->sockfd);
-
-	GSChildThreadRelease(thread);
-
-	return NULL;
-}
+static void *RSChildEntrypoint(void *);
 
 void *RSEntrypoint(void *threadParameter) {
 	UNUSED(threadParameter);
@@ -118,6 +109,17 @@ void *RSEntrypoint(void *threadParameter) {
 			break;
 		}
 	}
+
+	return NULL;
+}
+
+static void *RSChildEntrypoint(void *threadParameter) {
+	struct GSThread *thread = threadParameter;
+
+	RSChildHandler(thread->sockfd);
+	close(thread->sockfd);
+
+	GSChildThreadRelease(thread);
 
 	return NULL;
 }
