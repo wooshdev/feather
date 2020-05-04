@@ -51,7 +51,7 @@ SMGetPageTraffic(void) {
 	return result;
 }
 
-voi
+void
 SMNotifyRequest(void) {
 	pthread_mutex_lock(&MSTrafficMutex);
 	{
