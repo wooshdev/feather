@@ -40,9 +40,11 @@
 #include "misc/default.h"
 #include "client.h"
 
-static void *RSChildEntrypoint(void *);
+static void *
+RSChildEntrypoint(void *);
 
-void *RSEntrypoint(void *threadParameter) {
+void *
+RSEntrypoint(void *threadParameter) {
 	UNUSED(threadParameter);
 
 	struct pollfd pollInfo;
@@ -113,7 +115,8 @@ void *RSEntrypoint(void *threadParameter) {
 	return NULL;
 }
 
-static void *RSChildEntrypoint(void *threadParameter) {
+static void *
+RSChildEntrypoint(void *threadParameter) {
 	struct GSThread *thread = threadParameter;
 
 	RSChildHandler(thread->sockfd);

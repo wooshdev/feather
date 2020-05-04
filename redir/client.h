@@ -31,6 +31,7 @@
 #ifndef REDIR_CLIENT_H
 #define REDIR_CLIENT_H
 
-void RSChildHandler(int);
+void
+RSChildHandler(int);
 
 #endif /* REDIR_CLIENT_H */

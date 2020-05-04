@@ -46,9 +46,12 @@ const char redirFormat[] = "HTTP/1.1 301 Moved Permanently\r\n"
 						   "Server: %s\r\n"
 						   "\r\n";
 
-static int ReadPath(int, char *);
+/* Prototypes */
+static int
+ReadPath(int, char *);
 
-void RSChildHandler(int sockfd) {
+void
+RSChildHandler(int sockfd) {
 	char *date;
 	char *path;
 	ssize_t state;
@@ -108,7 +111,8 @@ void RSChildHandler(int sockfd) {
 	free(date);
 }
 
-static int ReadPath(int sockfd, char *buf) {
+static int
+ReadPath(int sockfd, char *buf) {
 	do {
 		ssize_t ret;
 
