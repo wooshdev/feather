@@ -31,8 +31,13 @@
 
 struct FCEntry;
 
-int		FCCompressFile(const char *, struct FCEntry *entry);
-int		FCCompressionSetup(void);
-void	FCCompressionDestroy(void);
+int
+FCCompressFile(const char *, struct FCEntry *entry);
+
+int
+FCCompressionSetup(void);
+
+void
+FCCompressionDestroy(void);
 
 #endif /* CACHE_COMPRESSION_H */

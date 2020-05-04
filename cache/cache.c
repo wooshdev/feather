@@ -59,10 +59,15 @@ char **fcNames = NULL;
 size_t fcSize = 0;
 
 /* Subroutines */
-void	calculateUsage(void);
-int		setFileContents(const char *, const char *, struct FCEntry *);
+void
+calculateUsage(void);
 
-int addFile(const char *directory, const char *fileName) {
+int
+setFileContents(const char *, const char *, struct FCEntry *);
+
+
+int
+addFile(const char *directory, const char *fileName) {
 	struct FCEntry **newEntries;
 	char **newNames;
 	char *name;
@@ -153,7 +158,8 @@ int addFile(const char *directory, const char *fileName) {
 	return 1;
 }
 
-int followDirectory(const char *name, int indent) {
+int
+followDirectory(const char *name, int indent) {
 	DIR *dir;
 	struct dirent *entry;
 
@@ -188,7 +194,8 @@ int followDirectory(const char *name, int indent) {
 	return 1;
 }
 
-int FCSetup(void) {
+int
+FCSetup(void) {
 	if (IOMkdirRecursive(OMCacheLocation) != 0) {
 		fputs(ANSI_COLOR_RED"[Cache::FCSetup] Failed to create cache folder."
 			  ANSI_COLOR_RESETLN, stderr);
@@ -216,7 +223,8 @@ int FCSetup(void) {
 	return 1;
 }
 
-int FCLookup(const char *path, struct FCResult *result, enum FCFlags flags) {
+int
+FCLookup(const char *path, struct FCResult *result, enum FCFlags flags) {
 	UNUSED(path);
 	UNUSED(result);
 
@@ -254,7 +262,8 @@ int FCLookup(const char *path, struct FCResult *result, enum FCFlags flags) {
 	return 0;
 }
 
-void FCDestroy(void) {
+void
+FCDestroy(void) {
 
 	if (fcCount != 0) {
 		size_t i;
@@ -274,7 +283,8 @@ void FCDestroy(void) {
 	FCCompressionDestroy();
 }
 
-int setFileContents(const char *file, const char *fileNameAbsolute,
+int
+setFileContents(const char *file, const char *fileNameAbsolute,
 					struct FCEntry *entry) {
 	char *buf;
 	int fd;
@@ -344,7 +354,8 @@ int setFileContents(const char *file, const char *fileNameAbsolute,
 	return 1;
 }
 
-void calculateUsage(void) {
+void
+calculateUsage(void) {
 	size_t i;
 	size_t totalOctets;
 	size_t totalObjects;

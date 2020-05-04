@@ -52,25 +52,35 @@ int					BrotliWindow =	BROTLI_DEFAULT_WINDOW;
 BrotliEncoderMode	BrotliMode =	BROTLI_DEFAULT_MODE;
 
 /* Subroutines */
-int		tryLoad(const char *, struct FCVersion *, const char *, time_t);
-int		trySave(const char *, struct FCVersion *, const char *);
-int		compressBrotli(const char *, struct FCEntry *);
+int
+tryLoad(const char *, struct FCVersion *, const char *, time_t);
 
-int FCCompressionSetup(void) {
+int
+trySave(const char *, struct FCVersion *, const char *);
+
+int
+compressBrotli(const char *, struct FCEntry *);
+
+
+int
+FCCompressionSetup(void) {
 	return 1;
 }
 
-void FCCompressionDestroy(void) {
+void
+FCCompressionDestroy(void) {
 }
 
-int FCCompressFile(const char *fileName, struct FCEntry *entry) {
+int
+FCCompressFile(const char *fileName, struct FCEntry *entry) {
 	if (!compressBrotli(fileName, entry))
 		return 0;
 
 	return 1;
 }
 
-int compressBrotli(const char *fileName, struct FCEntry *entry) {
+int
+compressBrotli(const char *fileName, struct FCEntry *entry) {
 	size_t initialSize;
 	char *newData;
 	BROTLI_BOOL ret;
@@ -138,7 +148,8 @@ int compressBrotli(const char *fileName, struct FCEntry *entry) {
 	return 1;
 }
 
-int trySave(const char *fileName, struct FCVersion *version, const char *ext) {
+int
+trySave(const char *fileName, struct FCVersion *version, const char *ext) {
 	char buf[1024];
 	char *changeCharacter;
 	size_t cacheLocationSize, extSize, fileNameSize;
@@ -199,8 +210,9 @@ int trySave(const char *fileName, struct FCVersion *version, const char *ext) {
 }
 
 /* Try load the compressed file from the filesystem cache. */
-int tryLoad(const char *fileName, struct FCVersion *version, const char *ext,
-			time_t modificationDate) {
+int
+tryLoad(const char *fileName, struct FCVersion *version, const char *ext,
+		time_t modificationDate) {
 	char buf[1024];
 	size_t cacheLocationSize, extSize;
 	int fd;
