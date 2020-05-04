@@ -28,10 +28,27 @@
 
 #include "response_headers.h"
 
+#include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+
+#include "cache/cache.h"
+#include "http/strings.h"
+#include "misc/default.h"
 
 /* "Sun, 20 Jan 2020 01:00:00 +0000" is 31 characters + 1 NULL long */
 #define DATE_HEADER_BUFFER_SIZE 32
+
+struct MediaType {
+	const char	*ext;
+	const char	*type;
+	int 		 charset;
+};
+
+const struct MediaType mediaTypes[] = {
+	{ "css",	"text/css",		1 },
+	{ "html",	"text/html",	1 },
+};
 
 char *HTTPCreateDate(time_t inputTime) {
 	size_t len;
@@ -49,4 +66,39 @@ char *HTTPCreateDate(time_t inputTime) {
 
 char *HTTPCreateDateCurrent(void) {
 	return HTTPCreateDate(time(NULL));
+}
+
+/* This is a subroutine of HTTPGetMediaTypeProperties(). */
+void guessMediaCharset(const char *file, struct FCEntry *entry) {
+	UNUSED(file);
+
+	/* TODO Guess charset */
+	entry->mediaCharset = MTC_utf8;	
+}
+
+void HTTPGetMediaTypeProperties(const char *file, struct FCEntry *entry) {
+	size_t i;
+	const char *last;
+
+	last = strrchr(file, '.');
+	if (last == NULL) {
+		entry->mediaType = MT_octetstream;
+		return;
+	}
+
+	last += 1;
+
+	for (i = 0; i < sizeof(mediaTypes) / sizeof(mediaTypes[0]); i++) {
+		if (strcasecmp(last, mediaTypes[i].ext) == 0) {
+			entry->mediaType = mediaTypes[i].type;
+
+			if (mediaTypes[i].charset)
+				guessMediaCharset(file, entry);
+
+			return;
+		}
+	}
+
+	entry->mediaType = MT_octetstream;
+	entry->mediaCharset = NULL;
 }

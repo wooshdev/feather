@@ -36,11 +36,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <strings.h>
 #include <unistd.h>
 
 #include "cache/compression.h"
-#include "http/strings.h"
+#include "http/response_headers.h"
 #include "misc/default.h"
 #include "misc/io.h"
 #include "misc/options.h"
@@ -60,7 +59,6 @@ size_t fcSize = 0;
 
 /* Subroutines */
 void	calculateUsage(void);
-void	guessMediaProperties(const char *, struct FCEntry *);
 int		setFileContents(const char *, const char *, struct FCEntry *);
 
 int addFile(const char *directory, const char *fileName) {
@@ -328,7 +326,7 @@ int setFileContents(const char *file, const char *fileNameAbsolute,
 		len -= ret;
 	} while (len != 0);
 
-	guessMediaProperties(fileNameAbsolute, entry);
+	HTTPGetMediaTypeProperties(fileNameAbsolute, entry);
 
 	if (!FCCompressFile(fileNameAbsolute, entry)) {
 		fputs(ANSI_COLOR_RED
@@ -342,40 +340,6 @@ int setFileContents(const char *file, const char *fileNameAbsolute,
 
 	close(fd);
 	return 1;
-}
-
-/* This is a subroutine of guessMediaProperties(). */
-void guessMediaCharset(const char *file, struct FCEntry *entry) {
-	UNUSED(file);
-
-	/* TODO Guess charset */
-	entry->mediaCharset = MTC_utf8;	
-}
-
-void guessMediaProperties(const char *file, struct FCEntry *entry) {
-	const char *last;
-
-	last = strrchr(file, '.');
-	if (last == NULL) {
-		entry->mediaType = MT_octetstream;
-		guessMediaCharset(file, entry);
-		return;
-	}
-
-	last += 1;
-	if (strcasecmp(last, "html") == 0) {
-		entry->mediaType = MT_html;
-		guessMediaCharset(file, entry);
-		return;
-	}
-
-	if (strcasecmp(last, "css") == 0) {
-		entry->mediaType = MT_css;
-		guessMediaCharset(file, entry);
-		return;
-	}
-
-	entry->mediaType = MT_octetstream;
 }
 
 void calculateUsage(void) {

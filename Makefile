@@ -118,7 +118,7 @@ bin/tests/redir: tests/redir/main.c \
 	$(CC) $(CFLAGS) -o $@ tests/redir/main.c -lpthread bin/redir/client.so \
 		bin/base/global_state.so bin/http/syntax.so bin/misc/io.so \
 		bin/http/response_headers.so bin/misc/statistics.so \
-		bin/misc/options.so
+		bin/misc/options.so bin/http/strings.so
 
 # Destroys ALL build files, but will leave the source files intact.
 clean:
