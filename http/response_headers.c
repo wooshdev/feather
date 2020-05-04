@@ -39,15 +39,38 @@
 /* "Sun, 20 Jan 2020 01:00:00 +0000" is 31 characters + 1 NULL long */
 #define DATE_HEADER_BUFFER_SIZE 32
 
+static const char MediaTypeJavaScript[] = "application/javascript";
+
 struct MediaType {
 	const char	*ext;
 	const char	*type;
-	int 		 charset;
 };
 
 const struct MediaType mediaTypes[] = {
-	{ "css",	"text/css",		1 },
-	{ "html",	"text/html",	1 },
+	{ "css",	"text/css" },
+	{ "gif",	"image/gif" },
+	{ "html",	"text/html" },
+	{ "ico",	"image/vnd.microsoft.icon" },
+	{ "jfi",	"image/jpeg" },
+	{ "jif",	"image/jpeg" },
+	{ "jig",	"image/jpeg" },
+	{ "jpe",	"image/jpeg" },
+	{ "jpg",	"image/jpeg" },
+	{ "jpeg",	"image/jpeg" },
+	{ "js",		MediaTypeJavaScript },
+	{ "md",		"text/markdown" },
+	{ "otc",	"font/otf" },
+	{ "otf",	"font/otf" },
+	{ "png",	"image/png" },
+	{ "svg",	"image/svg+xml" },
+	{ "tif",	"image/tiff" },
+	{ "tiff",	"image/tiff" },
+	{ "ttc",	"font/otf" },
+	{ "tte",	"font/ttf" },
+	{ "ttf",	"font/ttf" },
+	{ "webp",	"image/webp" },
+	{ "woff",	"font/woff" },
+	{ "woff2",	"font/woff2" },
 };
 
 char *HTTPCreateDate(time_t inputTime) {
@@ -73,7 +96,7 @@ void guessMediaCharset(const char *file, struct FCEntry *entry) {
 	UNUSED(file);
 
 	/* TODO Guess charset */
-	entry->mediaCharset = MTC_utf8;	
+	entry->mediaCharset = MTC_utf8;
 }
 
 void HTTPGetMediaTypeProperties(const char *file, struct FCEntry *entry) {
@@ -92,7 +115,8 @@ void HTTPGetMediaTypeProperties(const char *file, struct FCEntry *entry) {
 		if (strcasecmp(last, mediaTypes[i].ext) == 0) {
 			entry->mediaType = mediaTypes[i].type;
 
-			if (mediaTypes[i].charset)
+			if (strncmp(mediaTypes[i].type, "text/", 5) == 0 ||
+				mediaTypes[i].type == MediaTypeJavaScript)
 				guessMediaCharset(file, entry);
 
 			return;
