@@ -40,6 +40,7 @@
 
 #include "cache/compression.h"
 #include "http/response_headers.h"
+#include "http/strings.h"
 #include "misc/default.h"
 #include "misc/io.h"
 #include "misc/options.h"
@@ -295,6 +296,7 @@ int setFileContents(const char *file, const char *fileNameAbsolute,
 	}
 
 	entry->modificationDate = status.st_mtime;
+	entry->uncompressed.encoding = MTE_none;
 	entry->uncompressed.size = status.st_size;
 	entry->uncompressed.data = malloc(status.st_size);
 	if (entry->uncompressed.data == NULL) {
