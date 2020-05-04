@@ -67,11 +67,19 @@ extern const size_t	 GSMaxPathSize;
 extern const char	*GSServerHostName;
 extern const char	*GSServerProductName;
 
-void	GSChildThreadRelease(struct GSThread *);
-void	GSDestroy(void);
-int		GSInit(void);
-void	GSNotify(enum GSAction);
-int		GSScheduleChildThread(enum GSThreadParent, void *(*) (void *), int);
+void
+GSChildThreadRelease(struct GSThread *);
+
+void
+GSDestroy(void);
+int
+GSInit(void);
+
+void
+GSNotify(enum GSAction);
+
+int
+GSScheduleChildThread(enum GSThreadParent, void *(*) (void *), int);
 
 #endif /* BASE_GLOBAL_STATE_H */
  

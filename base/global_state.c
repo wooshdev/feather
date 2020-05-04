@@ -82,9 +82,11 @@ static struct GSThread *GSChildThreads;
 static pthread_mutex_t GSChildMutex = PTHREAD_MUTEX_INITIALIZER;
 
 /* Prototyping */
-int GSPopulateProductName(void);
+int
+GSPopulateProductName(void);
 
-void GSDestroy(void) {
+void
+GSDestroy(void) {
 	size_t i;
 	struct timespec time;
 
@@ -126,7 +128,8 @@ void GSDestroy(void) {
 	}
 }
 
-static void GSPopulateHostName(void) {
+static void
+GSPopulateHostName(void) {
 	struct addrinfo  hints;
 	struct addrinfo *info;
 	int gai_result;
@@ -155,7 +158,8 @@ static void GSPopulateHostName(void) {
 	freeaddrinfo(info);
 }
 
-int GSInit(void) {
+int
+GSInit(void) {
 	size_t i;
 
 	GSMainLoop = 1;
@@ -200,7 +204,8 @@ int GSInit(void) {
 	return 1;
 }
 
-void GSNotify(enum GSAction action) {
+void
+GSNotify(enum GSAction action) {
 	switch (action) {
 		case GSA_INTERRUPT:
 			GSMainLoop = 0;
@@ -210,8 +215,9 @@ void GSNotify(enum GSAction action) {
 	}
 }
 
-int GSScheduleChildThread(enum GSThreadParent parent,
-						  void *(*routine) (void *), int sockfd) {
+int
+GSScheduleChildThread(enum GSThreadParent parent,
+					  void *(*routine) (void *), int sockfd) {
 	int	state;
 	struct GSThread *thread;
 
@@ -269,7 +275,8 @@ int GSScheduleChildThread(enum GSThreadParent parent,
 }
 
 
-void GSChildThreadRelease(struct GSThread *thread) {
+void
+GSChildThreadRelease(struct GSThread *thread) {
 	pthread_mutex_lock(&GSChildMutex);
 
 	if (thread->sockfd > -1) {
@@ -282,7 +289,8 @@ void GSChildThreadRelease(struct GSThread *thread) {
 	pthread_mutex_unlock(&GSChildMutex);
 }
 
-int GSPopulateProductName(void) {
+int
+GSPopulateProductName(void) {
 	memcpy(internalProductName, "WFS", 4);
 
 	if (OMGSSystemInformationInServerHeader == OSIL_NONE)
