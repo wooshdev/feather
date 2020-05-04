@@ -39,14 +39,18 @@ extern const char *IOErrors[];
  * uint16_t		the port number
  * int			boolean: non-blocking or not
  */
-int IOCreateSocket(uint16_t, int);
+int
+IOCreateSocket(uint16_t, int);
+
 /**
  * Parameters:
  * int			the file descriptor
  * size_t		the timeout in microseconds
  */
-int IOTimeoutAvailableData(int, size_t);
+int
+IOTimeoutAvailableData(int, size_t);
 
-int IOMkdirRecursive(const char *);
+int
+IOMkdirRecursive(const char *);
 
 #endif /* BASE_IO_H */

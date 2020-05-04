@@ -59,7 +59,8 @@ const char *internalSuffixCert = "/cert.pem";
 const char *internalSuffixChain = "/chain.pem";
 const char *internalSuffixPrivKey = "/privkey.pem";
 
-int internalSetupCertificatesLetsencrypt() {
+int
+internalSetupCertificatesLetsencrypt() {
 	DIR *d;
 	size_t genericSize, a, b;
 	struct dirent *dir;
@@ -110,7 +111,8 @@ int internalSetupCertificatesLetsencrypt() {
 	return 0;
 }
 
-int OMSetup(void) {
+int
+OMSetup(void) {
 	internalCert = NULL;
 	internalChain = NULL;
 	internalPrivKey = NULL;
@@ -123,7 +125,8 @@ int OMSetup(void) {
 	return 1;
 }
 
-void OMDestroy(void) {
+void
+OMDestroy(void) {
 	free(internalCert);
 	free(internalChain);
 	free(internalPrivKey);

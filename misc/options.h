@@ -103,7 +103,10 @@ extern const char	*OMCacheLocation;
 extern enum OSILevel OMGSSystemInformationInServerHeader;
 
 /* Functions */
-void	OMDestroy(void);
-int		OMSetup(void);
+void
+OMDestroy(void);
+
+int /* bool */
+OMSetup(void);
 
 #endif /* MISC_OPTIONS_H */

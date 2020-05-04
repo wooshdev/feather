@@ -51,7 +51,8 @@ const char *IOErrors[] = {
 	/*  7 */"failed to create directory",
 };
 
-int IOCreateSocket(uint16_t port, int nonBlocking) {
+int
+IOCreateSocket(uint16_t port, int nonBlocking) {
 	struct sockaddr_in addr;
 	int flag;
 	int sockfd;
@@ -104,7 +105,8 @@ int IOCreateSocket(uint16_t port, int nonBlocking) {
 	return sockfd;
 }
 
-int IOTimeoutAvailableData(int fd, size_t microTimeout) {
+int
+IOTimeoutAvailableData(int fd, size_t microTimeout) {
 	fd_set set;
 	struct timeval timeout;
 
@@ -117,7 +119,8 @@ int IOTimeoutAvailableData(int fd, size_t microTimeout) {
 	return select(fd+1, &set, NULL, NULL, &timeout) > 0;
 }
 
-int IOMkdirRecursive(const char *dir) {
+int
+IOMkdirRecursive(const char *dir) {
 	char buf[256];
 	char *p;
 	size_t len;

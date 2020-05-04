@@ -38,7 +38,8 @@ static pthread_mutex_t MSTrafficMutex = PTHREAD_MUTEX_INITIALIZER;
 static size_t MSTrafficCount = 0;
 static clock_t MSBeginTime = -1;
 
-size_t SMGetPageTraffic(void) {
+size_t
+SMGetPageTraffic(void) {
 	size_t result;
 
 	pthread_mutex_lock(&MSTrafficMutex);
@@ -50,7 +51,8 @@ size_t SMGetPageTraffic(void) {
 	return result;
 }
 
-void SMNotifyRequest(void) {
+voi
+SMNotifyRequest(void) {
 	pthread_mutex_lock(&MSTrafficMutex);
 	{
 		MSTrafficCount += 1;
@@ -58,11 +60,13 @@ void SMNotifyRequest(void) {
 	pthread_mutex_unlock(&MSTrafficMutex);
 }
 
-void SMBegin(void) {
+void
+SMBegin(void) {
 	MSBeginTime = clock();
 }
 
-void SMEnd(void) {
+void
+SMEnd(void) {
 	clock_t endTime;
 	int hasPrinted; /* boolean */
 

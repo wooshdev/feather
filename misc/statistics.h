@@ -36,9 +36,16 @@
 
 #include <stddef.h>
 
-void	SMBegin(void);
-void	SMEnd(void);
-size_t	SMGetPageTraffic(void);
-void	SMNotifyRequest(void);
+void
+SMBegin(void);
+
+void
+SMEnd(void);
+
+size_t
+SMGetPageTraffic(void);
+
+void
+SMNotifyRequest(void);
 
 #endif /* BASE_STATISTICS_H */
