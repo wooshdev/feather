@@ -28,7 +28,8 @@
 
 #include "syntax.h"
 
-int HTTPIsTokenCharacter(char c) {
+int
+HTTPIsTokenCharacter(char c) {
 	switch (c) {
 		case '!':
 		case '#':

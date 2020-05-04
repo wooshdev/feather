@@ -29,6 +29,7 @@
 #ifndef HTTP_SYNTAX_H
 #define HTTP_SYNTAX_H
  
-int HTTPIsTokenCharacter(char);
+int /* bool */
+HTTPIsTokenCharacter(char);
 
 #endif /* HTTP_SYNTAX_H */

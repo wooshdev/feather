@@ -33,8 +33,11 @@
 
 struct FCEntry;
 
-char *HTTPCreateDate(time_t);
-char *HTTPCreateDateCurrent(void);
+char *
+HTTPCreateDate(time_t);
+
+char *
+HTTPCreateDateCurrent(void);
 
 void
 HTTPGetMediaTypeProperties(const char *, struct FCEntry *);

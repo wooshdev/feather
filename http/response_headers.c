@@ -73,7 +73,8 @@ const struct MediaType mediaTypes[] = {
 	{ "woff2",	"font/woff2" },
 };
 
-char *HTTPCreateDate(time_t inputTime) {
+char *
+HTTPCreateDate(time_t inputTime) {
 	size_t len;
 	char *buf;
 
@@ -87,19 +88,22 @@ char *HTTPCreateDate(time_t inputTime) {
 	return realloc(buf, len + 1);
 }
 
-char *HTTPCreateDateCurrent(void) {
+char *
+HTTPCreateDateCurrent(void) {
 	return HTTPCreateDate(time(NULL));
 }
 
 /* This is a subroutine of HTTPGetMediaTypeProperties(). */
-void guessMediaCharset(const char *file, struct FCEntry *entry) {
+void
+guessMediaCharset(const char *file, struct FCEntry *entry) {
 	UNUSED(file);
 
 	/* TODO Guess charset */
 	entry->mediaCharset = MTC_utf8;
 }
 
-void HTTPGetMediaTypeProperties(const char *file, struct FCEntry *entry) {
+void
+HTTPGetMediaTypeProperties(const char *file, struct FCEntry *entry) {
 	size_t i;
 	const char *last;
 
