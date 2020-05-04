@@ -42,7 +42,8 @@
 #include "core/security.h"
 #include "misc/default.h"
 
-void *CSChildEntrypoint(void *threadParameter) {
+void *
+CSChildEntrypoint(void *threadParameter) {
 	struct GSThread *thread = threadParameter;
 	CSSClient client = NULL;
 	enum CSProtocol protocol;
@@ -83,7 +84,8 @@ void *CSChildEntrypoint(void *threadParameter) {
 	return NULL;
 }
 
-void *CSEntrypoint(void *threadParameter) {
+void *
+CSEntrypoint(void *threadParameter) {
 	UNUSED(threadParameter);
 
 	while (GSMainLoop) {

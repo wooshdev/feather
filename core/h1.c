@@ -121,12 +121,20 @@ static const char messageNotModified[] =
 	"\r\n";
 
 
-int handleRequest(CSSClient);
-int handleRequestStage2(CSSClient, struct HTTPRequest *, struct Timings *);
-int recoverError(CSSClient, enum HTTPError, struct HTTPRequest *);
-int writeResponse(CSSClient);
+int
+handleRequest(CSSClient);
 
-void CSHandleHTTP1(CSSClient client) {
+int
+handleRequestStage2(CSSClient, struct HTTPRequest *, struct Timings *);
+
+int
+recoverError(CSSClient, enum HTTPError, struct HTTPRequest *);
+
+int
+writeResponse(CSSClient);
+
+void
+CSHandleHTTP1(CSSClient client) {
 	int status;
 
 	do {
@@ -141,7 +149,8 @@ void CSHandleHTTP1(CSSClient client) {
 	} while(status);
 }
 
-int handleRequest(CSSClient client) {
+int
+handleRequest(CSSClient client) {
 	float diff;
 	struct HTTPHeader *newHeaders;
 	size_t pos;
@@ -417,7 +426,8 @@ int handleRequest(CSSClient client) {
 	return ret;
 }
 
-int recoverError(CSSClient client, enum HTTPError error,
+int
+recoverError(CSSClient client, enum HTTPError error,
 				 struct HTTPRequest *request) {
 	char *buf;
 	char date[32];
@@ -531,7 +541,8 @@ int recoverError(CSSClient client, enum HTTPError error,
 	}
 }
 
-int handleRequestStage2(CSSClient client, struct HTTPRequest *request,
+int
+handleRequestStage2(CSSClient client, struct HTTPRequest *request,
 						struct Timings *timings) {
 	/* TODO Improve variable naming. */
 	char *buf;

@@ -69,14 +69,16 @@ static const unsigned char ALPN_HTTP2[] = {
 #define ALPN_HTTP1_LEN 8
 #define ALPN_HTTP2_LEN 2
 
-static int alpnHandler(SSL *ssl, 
-					   const unsigned char **out, 
-					   unsigned char *outlen,
-					   const unsigned char *in,
-					   unsigned int inlen,
-					   void *arg);
+static int 
+alpnHandler(SSL *ssl, 
+			const unsigned char **out, 
+			unsigned char *outlen,
+			const unsigned char *in,
+			unsigned int inlen,
+			void *arg);
 
-int CSSetupSecurityManager(void) {
+int
+CSSetupSecurityManager(void) {
 	X509 *cert;
 
 	SSLMethod = TLS_server_method();
@@ -168,7 +170,8 @@ int CSSetupSecurityManager(void) {
 	return 1;
 }
 
-void CSDestroySecurityManager(void) {
+void
+CSDestroySecurityManager(void) {
 	/* Clean our objects */
 	SSL_CTX_free(SSLContext);
 
@@ -183,7 +186,8 @@ void CSDestroySecurityManager(void) {
 	CRYPTO_cleanup_all_ex_data();
 }
 
-void CSSDestroyClient(CSSClient client) {
+void
+CSSDestroyClient(CSSClient client) {
 	int state;
 	char unused[1];
 
@@ -195,7 +199,8 @@ void CSSDestroyClient(CSSClient client) {
 	SSL_free(client);
 }
 
-int CSSSetupClient(int sockfd, CSSClient *client) {
+int
+CSSSetupClient(int sockfd, CSSClient *client) {
 	int ret;
 	SSL *ssl;
 
@@ -228,7 +233,8 @@ int CSSSetupClient(int sockfd, CSSClient *client) {
 }
 
 /* TODO this implementation is blocking */
-int CSSWriteClient(CSSClient client, const char *buf, size_t len) {
+int
+CSSWriteClient(CSSClient client, const char *buf, size_t len) {
 	do {
 		ssize_t ret;
 
@@ -257,7 +263,8 @@ int CSSWriteClient(CSSClient client, const char *buf, size_t len) {
 	return 1;
 }
 
-int CSSReadClient(CSSClient client, char *buf, size_t len) {
+int
+CSSReadClient(CSSClient client, char *buf, size_t len) {
 	do {
 		ssize_t ret;
 
@@ -273,9 +280,10 @@ int CSSReadClient(CSSClient client, char *buf, size_t len) {
 	return 1;
 }
 
-static int compareALPN(const unsigned char *a,
-					   const unsigned char *b,
-					   size_t size) {
+static int
+compareALPN(const unsigned char *a,
+			const unsigned char *b,
+			size_t size) {
 	size_t i;
 	
 	for (i = 0; i < size; i++)
@@ -284,9 +292,9 @@ static int compareALPN(const unsigned char *a,
 	return 1;
 }
 
-static int alpnHandler(SSL *ssl, const unsigned char **out, 
-						unsigned char *outlen, const unsigned char *in,
-						unsigned int inlen, void *arg) {
+static int
+alpnHandler(SSL *ssl, const unsigned char **out, unsigned char *outlen,
+			const unsigned char *in, unsigned int inlen, void *arg) {
 	UNUSED(ssl);
 	UNUSED(arg);
 
@@ -325,7 +333,8 @@ static int alpnHandler(SSL *ssl, const unsigned char **out,
 	return SSL_TLSEXT_ERR_ALERT_FATAL;
 }
 
-enum CSProtocol CSSGetProtocol(CSSClient client) {
+enum CSProtocol
+CSSGetProtocol(CSSClient client) {
 	const unsigned char *data;
 	unsigned int len;
 

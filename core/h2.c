@@ -50,10 +50,18 @@ struct H2Setting;
 
 const char HTTP2Preface[] = "PRI * HTTP/2.0\r\n\r\nSM\r\n\r\n";
 
-int checkPreface(CSSClient);
-int readFrame(CSSClient, struct H2Frame *);
-int sendFrame(CSSClient, struct H2Frame *);
-int sendSettings(CSSClient, struct H2Setting *, size_t);
+/* Prototypes */
+int
+checkPreface(CSSClient);
+
+int
+readFrame(CSSClient, struct H2Frame *);
+
+int
+sendFrame(CSSClient, struct H2Frame *);
+
+int
+sendSettings(CSSClient, struct H2Setting *, size_t);
 
 void CSHandleHTTP2(CSSClient client) {
 	struct H2Frame frame;
@@ -78,7 +86,8 @@ void CSHandleHTTP2(CSSClient client) {
 
 /* If this functions returns 0, the contents of frame are undefined (can be any
  * value) */
-int readFrame(CSSClient client, struct H2Frame *frame) {
+int
+readFrame(CSSClient client, struct H2Frame *frame) {
 	uint8_t buf[4];
 
 	/* Length */
@@ -122,7 +131,8 @@ int readFrame(CSSClient client, struct H2Frame *frame) {
 	return 1;
 }
 
-int sendFrame(CSSClient client, struct H2Frame *frame) {
+int
+sendFrame(CSSClient client, struct H2Frame *frame) {
 	char buf[9] = {
 		frame->length >> 16,
 		frame->length >> 8,
@@ -146,7 +156,8 @@ int sendFrame(CSSClient client, struct H2Frame *frame) {
 	return 1;
 }
 
-int checkPreface(CSSClient client) {
+int
+checkPreface(CSSClient client) {
 	char buf[24];
 
 	if (!CSSReadClient(client, buf, 24))
@@ -155,7 +166,8 @@ int checkPreface(CSSClient client) {
 	return memcmp(buf, HTTP2Preface, 24) == 0;	
 }
 
-int sendSettings(CSSClient client, struct H2Setting *settings, size_t count) {
+int
+sendSettings(CSSClient client, struct H2Setting *settings, size_t count) {
 	struct H2Frame frame = {
 		count * 6,
 		H2_FRAME_SETTINGS,

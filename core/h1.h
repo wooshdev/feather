@@ -31,6 +31,7 @@
 
 #include "security.h"
 
-void CSHandleHTTP1(CSSClient);
+void
+CSHandleHTTP1(CSSClient);
 
 #endif /* CORE_H1_H */
