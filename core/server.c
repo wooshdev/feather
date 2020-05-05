@@ -46,7 +46,6 @@ void *
 CSChildEntrypoint(void *threadParameter) {
 	struct GSThread *thread = threadParameter;
 	CSSClient client = NULL;
-	enum CSProtocol protocol;
 	int ret;
 
 	ret = CSSSetupClient(thread->sockfd, &client);
@@ -56,22 +55,16 @@ CSChildEntrypoint(void *threadParameter) {
 	} else if (client == NULL) {
 		printf("Client was NULL: %i\n", ret);
 	} else {
-		protocol = CSSGetProtocol(client);
-		fputs("protocol is: ", stdout);
-		switch (protocol) {
+		switch (CSSGetProtocol(client)) {
 			case CSPROT_ERROR:
-				puts("CSPROT_ERROR");
 				break;
 			case CSPROT_HTTP1:
-				puts("CSPROT_HTTP1");
 				CSHandleHTTP1(client);
 				break;
 			case CSPROT_HTTP2:
-				puts("CSPROT_HTTP2");
 				CSHandleHTTP2(client);
 				break;
 			case CSPROT_NONE:
-				puts("CSPROT_NONE");
 				CSHandleHTTP1(client);
 				break;
 		}

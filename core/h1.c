@@ -145,7 +145,11 @@ CSHandleHTTP1(CSSClient client) {
 		status = handleRequest(client);
 		after = clock();
 
-		printf("handleRequest> took %f ms\n", (after - before)*1e3/CLOCKS_PER_SEC);
+/**
+ *		Disable this log for now.
+ *
+ * 		printf("handleRequest> took %f ms\n", (after - before)*1e3/CLOCKS_PER_SEC);
+ */
 	} while (status);
 }
 
@@ -440,7 +444,6 @@ recoverError(CSSClient client, enum HTTPError error,
 	/* The connection has probably been closed, so in this case we shouldn't
 	 * try to prepare and send a special error message. */
 	if (error == HTTP_ERROR_READ) {
-		puts("ERROR: FAILED TO READ");
 		free(request->headers);
 		free(request);
 		return FALSE;
@@ -674,7 +677,6 @@ handleRequestStage2(CSSClient client, struct HTTPRequest *request,
 		return FALSE;
 
 	ret = CSSWriteClient(client, result.data, result.size);
-	printf("CSSWriteClient written %zu octets!\n", result.size);
 
 	return ret ? TRUE : FALSE;
 }
