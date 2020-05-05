@@ -449,6 +449,7 @@ recoverError(CSSClient client, enum HTTPError error,
 		return FALSE;
 	}
 
+	/*
 	const char *const names[] = {
 		"HTTP_ERROR_FILE_NOT_FOUND",
 		"HTTP_ERROR_HEADER_ALLOCATION_FAILURE",
@@ -470,6 +471,7 @@ recoverError(CSSClient client, enum HTTPError error,
 
 	printf("error was: %s (client is %p, request is %p)\n", names[error], 
 		   (void *) client, (void *) request);
+	*/
 
 	/* We're done with request handling and after this we're just preparing the
 	 * response, so the request object isn't needed anymore and can be released
