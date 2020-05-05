@@ -62,11 +62,11 @@ size_t fcSize = 0;
 void
 calculateUsage(void);
 
-int
+bool
 setFileContents(const char *, const char *, struct FCEntry *);
 
 
-int
+bool
 addFile(const char *directory, const char *fileName) {
 	struct FCEntry **newEntries;
 	char **newNames;
@@ -84,7 +84,7 @@ addFile(const char *directory, const char *fileName) {
 	if (!name) {
 		fputs(ANSI_COLOR_RED"[Cache::addFile] Allocation failure on 'name'."
 			  ANSI_COLOR_RESETLN, stderr);
-		return 0;
+		return FALSE;
 	}
 
 	entry = malloc(sizeof(struct FCEntry));
@@ -92,7 +92,7 @@ addFile(const char *directory, const char *fileName) {
 		fputs(ANSI_COLOR_RED"[Cache::addFile] Allocation failure on 'entry'."
 			  ANSI_COLOR_RESETLN, stderr);
 		free(name);
-		return 0;
+		return FALSE;
 	}
 
 	/* Create name */
@@ -108,7 +108,7 @@ addFile(const char *directory, const char *fileName) {
 			  ANSI_COLOR_RESETLN, stderr);
 		free(entry);
 		free(name);
-		return 0;
+		return FALSE;
 	}
 
 	/* Reallocate if full */
@@ -126,7 +126,7 @@ addFile(const char *directory, const char *fileName) {
 			free(name);
 			fcEntries = NULL;
 			fcNames = NULL;
-			return 0;
+			return FALSE;
 		}
 		fcEntries = newEntries;
 
@@ -141,7 +141,7 @@ addFile(const char *directory, const char *fileName) {
 			free(name);
 			fcEntries = NULL;
 			fcNames = NULL;
-			return 0;
+			return FALSE;
 		}
 		fcNames = newNames;
 	}
@@ -155,10 +155,10 @@ addFile(const char *directory, const char *fileName) {
 	fcEntries[fcCount] = entry;
 
 	fcCount += 1;
-	return 1;
+	return TRUE;
 }
 
-int
+bool
 followDirectory(const char *name, int indent) {
 	DIR *dir;
 	struct dirent *entry;
@@ -166,7 +166,7 @@ followDirectory(const char *name, int indent) {
 	if (!(dir = opendir(name))) {
 		perror("Cache::followDirectory opendir() failure");
 		printf("[Cache::followDirectory] Directory: '%s'\n", name);
-		return 0;
+		return FALSE;
 	}
 
 	while ((entry = readdir(dir)) != NULL) {
@@ -179,33 +179,33 @@ followDirectory(const char *name, int indent) {
 
 			if (!followDirectory(pathBuffer, indent + 2)) {
 				closedir(dir);
-				return 0;
+				return FALSE;
 			}
 		} else if (!addFile(name, entry->d_name)) {
 			fputs(ANSI_COLOR_RED
 					"[Cache::followDirectory] addFile() failed."
 					ANSI_COLOR_RESETLN, stderr);
 			closedir(dir);
-			return 0;
+			return FALSE;
 		}
 	}
 
 	closedir(dir);
-	return 1;
+	return TRUE;
 }
 
-int
+bool
 FCSetup(void) {
 	if (IOMkdirRecursive(OMCacheLocation) != 0) {
 		fputs(ANSI_COLOR_RED"[Cache::FCSetup] Failed to create cache folder."
 			  ANSI_COLOR_RESETLN, stderr);
-		return 0;
+		return FALSE;
 	}
 
 	if (!FCCompressionSetup()) {
 		fputs(ANSI_COLOR_RED"[Cache::FCSetup] FCCompressionSetup() failed."
 			  ANSI_COLOR_RESETLN, stderr);
-		return 0;
+		return FALSE;
 	}
 
 	if (!followDirectory("/var/www/html", 0)) {
@@ -213,17 +213,17 @@ FCSetup(void) {
 			  ANSI_COLOR_RESETLN, stderr);
 		FCCompressionDestroy();
 		FCDestroy();
-		return 0;
+		return FALSE;
 	}
 
 #ifdef FC_CALCULATE_USAGE
 	calculateUsage();
 #endif /* FC_CALCULATE_USAGE */
 
-	return 1;
+	return TRUE;
 }
 
-int
+bool
 FCLookup(const char *path, struct FCResult *result, enum FCFlags flags) {
 	UNUSED(path);
 	UNUSED(result);
@@ -255,11 +255,11 @@ FCLookup(const char *path, struct FCResult *result, enum FCFlags flags) {
 			result->encoding = version->encoding;
 			result->size = version->size;
 
-			return 1;
+			return TRUE;
 		}
 	}
 
-	return 0;
+	return FALSE;
 }
 
 void
@@ -283,7 +283,7 @@ FCDestroy(void) {
 	FCCompressionDestroy();
 }
 
-int
+bool
 setFileContents(const char *file, const char *fileNameAbsolute,
 					struct FCEntry *entry) {
 	char *buf;
@@ -295,14 +295,14 @@ setFileContents(const char *file, const char *fileNameAbsolute,
 	if (fd == -1) {
 		perror(ANSI_COLOR_RED"[Cache::setFileContents] read() failure");
 		fprintf(stderr, "\tFile='%s'"ANSI_COLOR_RESETLN, file);
-		return 0;
+		return FALSE;
 	}
 
 	if (fstat(fd, &status) == -1) {
 		perror(ANSI_COLOR_RED"[Cache::setFileContents] fstat() failure");
 		fprintf(stderr, "\tFile='%s'"ANSI_COLOR_RESETLN, file);
 		close(fd);
-		return 0;
+		return FALSE;
 	}
 
 	entry->modificationDate = status.st_mtime;
@@ -313,7 +313,7 @@ setFileContents(const char *file, const char *fileNameAbsolute,
 		fputs(ANSI_COLOR_RED"WARNING: setFileContents() malloc failed."
 			  ANSI_COLOR_RESETLN, stderr);
 		close(fd);
-		return 0;
+		return FALSE;
 	}
 
 	len = status.st_size;
@@ -331,7 +331,7 @@ setFileContents(const char *file, const char *fileNameAbsolute,
 			free(entry->uncompressed.data);
 			entry->uncompressed.data = NULL;
 			close(fd);
-			return 0;
+			return FALSE;
 		}
 
 		buf += ret;
@@ -347,11 +347,11 @@ setFileContents(const char *file, const char *fileNameAbsolute,
 		free(entry->uncompressed.data);
 		entry->uncompressed.data = NULL;
 		close(fd);
-		return 0;
+		return FALSE;
 	}
 
 	close(fd);
-	return 1;
+	return TRUE;
 }
 
 void

@@ -29,6 +29,18 @@
 #ifndef DEFAULT_H
 #define DEFAULT_H
 
+#if __STDC_VERSION__ >= 199901L
+	/* stdbool.h is a C99 header */
+	#include <stdbool.h>
+#else
+	typedef int bool;
+	#define true 1
+	#define false 0
+#endif
+
+#define TRUE true
+#define FALSE false
+
 #define ANSI_COLOR_RED		"\x1b[31m"
 #define ANSI_COLOR_GREEN	"\x1b[32m"
 #define ANSI_COLOR_YELLOW	"\x1b[33m"

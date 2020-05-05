@@ -32,6 +32,8 @@
 #ifndef MISC_OPTIONS_H
 #define MISC_OPTIONS_H
 
+#include "misc/default.h"
+
 /**
  * The system information level. You can choose to include information about
  * the host operating system on which the server is running, for debugging 
@@ -106,7 +108,7 @@ extern enum OSILevel OMGSSystemInformationInServerHeader;
 void
 OMDestroy(void);
 
-int /* bool */
+bool
 OMSetup(void);
 
 #endif /* MISC_OPTIONS_H */

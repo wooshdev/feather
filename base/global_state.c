@@ -82,7 +82,7 @@ static struct GSThread *GSChildThreads;
 static pthread_mutex_t GSChildMutex = PTHREAD_MUTEX_INITIALIZER;
 
 /* Prototyping */
-int
+bool
 GSPopulateProductName(void);
 
 void
@@ -158,7 +158,7 @@ GSPopulateHostName(void) {
 	freeaddrinfo(info);
 }
 
-int
+bool
 GSInit(void) {
 	size_t i;
 
@@ -173,13 +173,13 @@ GSInit(void) {
 	if (!GSPopulateProductName()) {
 		perror(ANSI_COLOR_RED"[GSInit] Failed to populate the 'Server' header"
 			   ANSI_COLOR_RESETLN);
-		return 0;
+		return FALSE;
 	}
 
 	GSChildThreads = calloc(GSChildSize, sizeof(struct GSThread));
 	if (GSChildThreads == NULL) {
 		perror(ANSI_COLOR_RED"[GSInit] Failed to allocate"ANSI_COLOR_RESETLN);
-		return 0;
+		return FALSE;
 	}
 
 	for (i = 0; i < GSChildSize; i++)
@@ -190,7 +190,7 @@ GSInit(void) {
 	if (GSCoreSocket < 0) {
 		printf(ANSI_COLOR_RED"[GSInit] Failed to create GSCoreSocket: %s"
 			ANSI_COLOR_RESETLN, IOErrors[-GSCoreSocket]);
-		return 0;
+		return FALSE;
 	}
 
 	GSRedirSocket = IOCreateSocket(80, 1);
@@ -198,10 +198,10 @@ GSInit(void) {
 	if (GSRedirSocket < 0) {
 		printf(ANSI_COLOR_RED"[GSInit] Failed to create GSRedirSocket: %s"
 			ANSI_COLOR_RESETLN, IOErrors[-GSRedirSocket]);
-		return 0;
+		return FALSE;
 	}
 
-	return 1;
+	return TRUE;
 }
 
 void
@@ -215,7 +215,7 @@ GSNotify(enum GSAction action) {
 	}
 }
 
-int
+bool
 GSScheduleChildThread(enum GSThreadParent parent,
 					  void *(*routine) (void *), int sockfd) {
 	int	state;
@@ -237,7 +237,7 @@ GSScheduleChildThread(enum GSThreadParent parent,
 		if (thread->state) {
 			fputs(ANSI_COLOR_RED"[GSScheduleChildThread] All threads are in"
 				" use at the moment."ANSI_COLOR_RESETLN, stderr);
-			return 0;
+			return FALSE;
 		}
 
 		thread->sockfd = sockfd;
@@ -266,12 +266,12 @@ GSScheduleChildThread(enum GSThreadParent parent,
 		}
 		pthread_mutex_unlock(&GSChildMutex);
 
-		return 0;
+		return FALSE;
 	}
 
 	pthread_detach(thread->thread);
 
-	return 1;
+	return TRUE;
 }
 
 
@@ -289,12 +289,12 @@ GSChildThreadRelease(struct GSThread *thread) {
 	pthread_mutex_unlock(&GSChildMutex);
 }
 
-int
+bool
 GSPopulateProductName(void) {
 	memcpy(internalProductName, "WFS", 4);
 
 	if (OMGSSystemInformationInServerHeader == OSIL_NONE)
-		return 1;
+		return TRUE;
 
 	char	*str;
 	size_t	 len;
@@ -314,7 +314,7 @@ GSPopulateProductName(void) {
 		perror("uname");
 		fputs(ANSI_COLOR_RED"[GSInit] [GSPopulateProductName] Failed to "
 			  "retrieve system information."ANSI_COLOR_RESETLN, stdout);
-		return 0;
+		return FALSE;
 	}
 
 	if (OMGSSystemInformationInServerHeader & OSIL_SYSNAME) {
@@ -323,7 +323,7 @@ GSPopulateProductName(void) {
 			fprintf(stderr, ANSI_COLOR_RED"[GSInit] [GSPopulateProductName] E:"
 				   " The variable 'sysname' doesn't fit! value='%s' (%zu"
 					" characters)"ANSI_COLOR_RESETLN, systemName.sysname, len);
-			return 0;
+			return FALSE;
 		}
 
 		memcpy(str, systemName.sysname, len);
@@ -337,7 +337,7 @@ GSPopulateProductName(void) {
 			fprintf(stderr, ANSI_COLOR_RED"[GSInit] [GSPopulateProductName] E:"
 				   " The variable 'nodename' doesn't fit! value='%s' (%zu"
 					" characters)"ANSI_COLOR_RESETLN, systemName.nodename, len);
-			return 0;
+			return FALSE;
 		}
 
 		memcpy(str, systemName.nodename, len);
@@ -352,7 +352,7 @@ GSPopulateProductName(void) {
 			fprintf(stderr, ANSI_COLOR_RED"[GSInit] [GSPopulateProductName] E:"
 				   " The variable 'release' doesn't fit! value='%s' (%zu"
 					" characters)"ANSI_COLOR_RESETLN, systemName.release, len);
-			return 0;
+			return FALSE;
 		}
 
 		memcpy(str, systemName.release, len);
@@ -367,7 +367,7 @@ GSPopulateProductName(void) {
 			fprintf(stderr, ANSI_COLOR_RED"[GSInit] [GSPopulateProductName] E: "
 				   "'machine' is too big! machine='%s' (%zu characters)"
 					ANSI_COLOR_RESETLN, systemName.machine, len);
-			return 0;
+			return FALSE;
 		}
 
 		memcpy(str, systemName.machine, len);
@@ -395,7 +395,7 @@ GSPopulateProductName(void) {
 			fputs(ANSI_COLOR_RED"[GSInit] [GSPopulateProductName] E: Failed to"
 				  " open the distribution information file: "LINUX_DIST_FILE
 				  ANSI_COLOR_RESETLN, stderr);
-			return 0;
+			return FALSE;
 		}
 
 		/* Stat() the file to retrieve the file size which is used to allocate
@@ -412,7 +412,7 @@ GSPopulateProductName(void) {
 			fputs(ANSI_COLOR_RED"[GSInit] [GSPopulateProductName] E: Failed to"
 				  " check the status of the distribution information file: "
 				  LINUX_DIST_FILE""ANSI_COLOR_RESETLN, stderr);
-			return 0;
+			return FALSE;
 		}
 
 		/* Allocate the buffer 'buf'. In this buffer the contents of the file
@@ -424,7 +424,7 @@ GSPopulateProductName(void) {
 				  " allocate memory for the distribution information file: "
 				  LINUX_DIST_FILE""ANSI_COLOR_RESET, stderr);
 			close(fd);
-			return 0;
+			return FALSE;
 		}
 		buf[fileStatus.st_size] = '\0';
 
@@ -443,7 +443,7 @@ GSPopulateProductName(void) {
 					  LINUX_DIST_FILE""ANSI_COLOR_RESET, stderr);
 				close(fd);
 				free(buf);
-				return 0;
+				return FALSE;
 			}
 
 			llen -= ret;
@@ -475,7 +475,7 @@ GSPopulateProductName(void) {
 					fprintf(stderr, ANSI_COLOR_RED"[GSInit] [GSPopulateProduct"
 							"Name] E: The variable 'distname' doesn't fit! %zu"
 							" characters"ANSI_COLOR_RESETLN, valueSize);
-					return 0;
+					return FALSE;
 				}
 
 				memcpy(str, chrEq + 1, valueSize);
@@ -498,7 +498,7 @@ GSPopulateProductName(void) {
 					fprintf(stderr, ANSI_COLOR_RED"[GSInit] [GSPopulateProduct"
 							"Name] E: The variable 'distversion' doesn't fit!"
 							" %zu characters"ANSI_COLOR_RESETLN, valueSize);
-					return 0;
+					return FALSE;
 				}
 
 				memcpy(str, chrEq + 1, valueSize);
@@ -521,7 +521,7 @@ GSPopulateProductName(void) {
 					fprintf(stderr, ANSI_COLOR_RED"[GSInit] [GSPopulateProduct"
 							"Name] E: The variable 'distversion' doesn't fit!"
 							" %zu characters"ANSI_COLOR_RESETLN, valueSize);
-					return 0;
+					return FALSE;
 				}
 
 				memcpy(str, chrEq + 1, valueSize);
@@ -549,7 +549,7 @@ GSPopulateProductName(void) {
 					fprintf(stderr, ANSI_COLOR_RED"[GSInit] [GSPopulateProduct"
 							"Name] E: The variable 'distversion' doesn't fit!"
 							" %zu characters"ANSI_COLOR_RESETLN, valueSize);
-					return 0;
+					return FALSE;
 				}
 
 				memcpy(str, chrEq + 1 + (isQuoted ? 1 : 0), valueSize);
@@ -596,5 +596,5 @@ GSPopulateProductName(void) {
 
 	printf("GSPopulateProductName: '%s'\n", GSServerProductName);
 
-	return 1;
+	return TRUE;
 }

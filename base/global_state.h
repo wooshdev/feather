@@ -34,6 +34,8 @@
 #include <pthread.h>
 #include <stddef.h>
 
+#include "misc/default.h"
+
 struct GSThread {
 	int			 state;
 	pthread_t	 thread;
@@ -72,13 +74,14 @@ GSChildThreadRelease(struct GSThread *);
 
 void
 GSDestroy(void);
-int
+
+bool
 GSInit(void);
 
 void
 GSNotify(enum GSAction);
 
-int
+bool
 GSScheduleChildThread(enum GSThreadParent, void *(*) (void *), int);
 
 #endif /* BASE_GLOBAL_STATE_H */

@@ -29,12 +29,14 @@
 #ifndef CACHE_COMPRESSION_H
 #define CACHE_COMPRESSION_H
 
+#include "misc/default.h"
+
 struct FCEntry;
 
-int
+bool
 FCCompressFile(const char *, struct FCEntry *entry);
 
-int
+bool
 FCCompressionSetup(void);
 
 void

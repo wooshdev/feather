@@ -233,7 +233,7 @@ CSSSetupClient(int sockfd, CSSClient *client) {
 }
 
 /* TODO this implementation is blocking */
-int
+bool
 CSSWriteClient(CSSClient client, const char *buf, size_t len) {
 	do {
 		ssize_t ret;
@@ -253,17 +253,17 @@ CSSWriteClient(CSSClient client, const char *buf, size_t len) {
 					   ERR_func_error_string(error));
 			}
 #endif /* CORE_SECURITY_FLAG_FIX_WRITE_ERRORS */
-			return 0;
+			return FALSE;
 		}
 
 		buf += ret;
 		len -= ret;
 	} while (len > 0);
 
-	return 1;
+	return TRUE;
 }
 
-int
+bool
 CSSReadClient(CSSClient client, char *buf, size_t len) {
 	do {
 		ssize_t ret;
@@ -271,13 +271,13 @@ CSSReadClient(CSSClient client, char *buf, size_t len) {
 		ret = SSL_read(client, buf, len);
 
 		if (ret <= 0)
-			return 0;
+			return FALSE;
 
 		buf += ret;
 		len -= ret;
 	} while (len > 0);
 
-	return 1;
+	return TRUE;
 }
 
 static int

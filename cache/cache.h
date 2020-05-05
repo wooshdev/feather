@@ -33,6 +33,8 @@
 
 #include <time.h>
 
+#include "misc/default.h"
+
 struct FCVersion {
 	char		*data;
 	const char	*encoding;
@@ -62,10 +64,10 @@ struct FCResult {
 	size_t		 size;
 };
 
-int
+bool
 FCSetup(void);
 
-int
+bool
 FCLookup(const char *, struct FCResult *, enum FCFlags);
 
 void

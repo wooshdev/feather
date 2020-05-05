@@ -52,7 +52,7 @@ const char *IOErrors[] = {
 };
 
 int
-IOCreateSocket(uint16_t port, int nonBlocking) {
+IOCreateSocket(uint16_t port, bool nonBlocking) {
 	struct sockaddr_in addr;
 	int flag;
 	int sockfd;
@@ -105,7 +105,7 @@ IOCreateSocket(uint16_t port, int nonBlocking) {
 	return sockfd;
 }
 
-int
+bool
 IOTimeoutAvailableData(int fd, size_t microTimeout) {
 	fd_set set;
 	struct timeval timeout;

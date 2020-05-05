@@ -35,6 +35,8 @@
 
 #include <openssl/ossl_typ.h>
 
+#include "misc/default.h"
+
 typedef SSL *CSSClient;
 
 enum CSProtocol {
@@ -56,13 +58,13 @@ CSSDestroyClient(CSSClient);
 enum CSProtocol
 CSSGetProtocol(CSSClient);
 
-int
+bool
 CSSReadClient(CSSClient, char *, size_t); 
 
 int
 CSSSetupClient(int, CSSClient *);
 
-int
+bool
 CSSWriteClient(CSSClient, const char *, size_t);
 
 

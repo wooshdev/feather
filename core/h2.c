@@ -51,16 +51,16 @@ struct H2Setting;
 const char HTTP2Preface[] = "PRI * HTTP/2.0\r\n\r\nSM\r\n\r\n";
 
 /* Prototypes */
-int
+bool
 checkPreface(CSSClient);
 
-int
+bool
 readFrame(CSSClient, struct H2Frame *);
 
-int
+bool
 sendFrame(CSSClient, struct H2Frame *);
 
-int
+bool
 sendSettings(CSSClient, struct H2Setting *, size_t);
 
 void CSHandleHTTP2(CSSClient client) {
@@ -75,9 +75,13 @@ void CSHandleHTTP2(CSSClient client) {
 	}
 
 	/* Server preface = (potentially empty) settings frame */
-	sendSettings(client, NULL, 0);
+	if (!sendSettings(client, NULL, 0)) {
+		fputs(ANSI_COLOR_RED"[H2] Failed to send settings"ANSI_COLOR_RESETLN,
+			  stderr);
+		return;
+	}
 
-	while (1) {
+	while (TRUE) {
 		if (!readFrame(client, &frame))
 			break;
 		free(frame.payload);
@@ -86,13 +90,13 @@ void CSHandleHTTP2(CSSClient client) {
 
 /* If this functions returns 0, the contents of frame are undefined (can be any
  * value) */
-int
+bool
 readFrame(CSSClient client, struct H2Frame *frame) {
 	uint8_t buf[4];
 
 	/* Length */
 	if (!CSSReadClient(client, (char *)buf, 3))
-		return 0;
+		return FALSE;
 
 #if __BYTE_ORDER == __LITTLE_ENDIAN
 	frame->length = (buf[0] << 16) + (buf[1] << 8) + buf[2];
@@ -100,15 +104,15 @@ readFrame(CSSClient client, struct H2Frame *frame) {
 
 	/* Type */
 	if (!CSSReadClient(client, (char *) &frame->type, 1))
-		return 0;
+		return FALSE;
 
 	/* Flags */
 	if (!CSSReadClient(client, (char *) &frame->flags, 1))
-		return 0;
+		return FALSE;
 
 	/* R + Stream Identifier */
 	if (!CSSReadClient(client, (char *) buf, 4))
-		return 0;
+		return FALSE;
 	frame->stream = ntohs((uint32_t) *buf);
 
 	puts("Frame information");
@@ -121,17 +125,17 @@ readFrame(CSSClient client, struct H2Frame *frame) {
 	/* Payload */
 	frame->payload = malloc(frame->length);
 	if (frame->payload == NULL)
-		return 0;
+		return FALSE;
 
 	if (!CSSReadClient(client, (char *)frame->payload, frame->length)) {
 		free(frame->payload);
-		return 0;
+		return FALSE;
 	}
 
-	return 1;
+	return TRUE;
 }
 
-int
+bool
 sendFrame(CSSClient client, struct H2Frame *frame) {
 	char buf[9] = {
 		frame->length >> 16,
@@ -146,17 +150,17 @@ sendFrame(CSSClient client, struct H2Frame *frame) {
 	};
 
 	if (!CSSWriteClient(client, buf, 9))
-		return 0;
+		return FALSE;
 
 	if (frame->length != 0 &&
 		frame->payload != NULL &&
 		!CSSWriteClient(client, frame->payload, frame->length))
-		return 0;
+		return FALSE;
 
-	return 1;
+	return TRUE;
 }
 
-int
+bool
 checkPreface(CSSClient client) {
 	char buf[24];
 
@@ -166,7 +170,7 @@ checkPreface(CSSClient client) {
 	return memcmp(buf, HTTP2Preface, 24) == 0;	
 }
 
-int
+bool
 sendSettings(CSSClient client, struct H2Setting *settings, size_t count) {
 	struct H2Frame frame = {
 		count * 6,

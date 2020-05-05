@@ -121,21 +121,21 @@ static const char messageNotModified[] =
 	"\r\n";
 
 
-int
+bool
 handleRequest(CSSClient);
 
-int
+bool
 handleRequestStage2(CSSClient, struct HTTPRequest *, struct Timings *);
 
-int
+bool
 recoverError(CSSClient, enum HTTPError, struct HTTPRequest *);
 
-int
+bool
 writeResponse(CSSClient);
 
 void
 CSHandleHTTP1(CSSClient client) {
-	int status;
+	bool status;
 
 	do {
 		clock_t after;
@@ -146,11 +146,12 @@ CSHandleHTTP1(CSSClient client) {
 		after = clock();
 
 		printf("handleRequest> took %f ms\n", (after - before)*1e3/CLOCKS_PER_SEC);
-	} while(status);
+	} while (status);
 }
 
-int
+bool
 handleRequest(CSSClient client) {
+	bool bret;
 	float diff;
 	struct HTTPHeader *newHeaders;
 	size_t pos;
@@ -162,7 +163,7 @@ handleRequest(CSSClient client) {
 
 	request = malloc(sizeof(struct HTTPRequest));
 	if (!request)
-		return 0;
+		return FALSE;
 
 	request->headers = NULL;
 	request->headerCount = 0;
@@ -371,7 +372,7 @@ handleRequest(CSSClient client) {
 
 	/* Handling */
 	timings.handling.before = clock();
-	ret = handleRequestStage2(client, request, &timings);
+	bret = handleRequestStage2(client, request, &timings);
 	timings.handling.after = clock();
 
 	diff = (timings.buffering.after - timings.buffering.before)
@@ -423,10 +424,10 @@ handleRequest(CSSClient client) {
 			" not-found" : "")
 	);
 
-	return ret;
+	return bret;
 }
 
-int
+bool
 recoverError(CSSClient client, enum HTTPError error,
 				 struct HTTPRequest *request) {
 	char *buf;
@@ -442,7 +443,7 @@ recoverError(CSSClient client, enum HTTPError error,
 		puts("ERROR: FAILED TO READ");
 		free(request->headers);
 		free(request);
-		return 0;
+		return FALSE;
 	}
 
 	const char *const names[] = {
@@ -506,7 +507,7 @@ recoverError(CSSClient client, enum HTTPError error,
 
 	if (!buf) {
 		perror("Allocation failure");
-		return 0;
+		return FALSE;
 	}
 
 	formattedBufSize = sprintf(buf, messageFormat,
@@ -523,25 +524,25 @@ recoverError(CSSClient client, enum HTTPError error,
 	free(buf);
 
 	if (!ret)
-		return 0;
+		return FALSE;
 
 	ret = CSSWriteClient(client, document, 
 						 sizeof(document) / sizeof(document[0]) - 1);
 
 	if (!ret)
-		return 0;
+		return FALSE;
 
 	switch (error) {
 		/* Errors that don't affect the connection should return 1, and errors
 		 * that do should return 0. */
 		case HTTP_ERROR_FILE_NOT_FOUND:
-			return 1;
+			return TRUE;
 		default:
-			return 0;
+			return FALSE;
 	}
 }
 
-int
+bool
 handleRequestStage2(CSSClient client, struct HTTPRequest *request,
 						struct Timings *timings) {
 	/* TODO Improve variable naming. */
@@ -554,7 +555,7 @@ handleRequestStage2(CSSClient client, struct HTTPRequest *request,
 	size_t len;
 	char mediaInfo[128];
 	struct FCResult result;
-	int ret;
+	bool ret;
 
 	time_t actualTime;
 	struct tm brokenDownTime;
@@ -620,14 +621,16 @@ handleRequestStage2(CSSClient client, struct HTTPRequest *request,
 					 strlen(GSServerProductName) + 1);
 		if (!buf) {
 			perror("Allocation failure");
-			return 0;
+			return FALSE;
 		}
 
 		formattedBufSize = sprintf(buf, messageNotModified, date, 
 								   GSServerProductName);
 		ret = CSSWriteClient(client, buf, formattedBufSize);
 		free(buf);
-		return ret;
+
+		/* is the following ?: really necessary? */
+		return ret ? TRUE : FALSE;
 	}
 
 	/* Follow-up for the dateLastModified header */
@@ -651,7 +654,7 @@ handleRequestStage2(CSSClient client, struct HTTPRequest *request,
 
 	if (!buf) {
 		perror("Allocation failure");
-		return 0;
+		return FALSE;
 	}
 
 	formattedBufSize = sprintf(buf, messageFormat,
@@ -668,10 +671,10 @@ handleRequestStage2(CSSClient client, struct HTTPRequest *request,
 	free(buf);
 
 	if (!ret)
-		return 0;
+		return FALSE;
 
 	ret = CSSWriteClient(client, result.data, result.size);
 	printf("CSSWriteClient written %zu octets!\n", result.size);
 
-	return ret;
+	return ret ? TRUE : FALSE;
 }

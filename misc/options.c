@@ -111,7 +111,7 @@ internalSetupCertificatesLetsencrypt() {
 	return 0;
 }
 
-int
+bool
 OMSetup(void) {
 	internalCert = NULL;
 	internalChain = NULL;
@@ -119,10 +119,10 @@ OMSetup(void) {
 
 	if (internalSetupCertificatesLetsencrypt() <= 0) {
 		puts("Failed to setup certificate files using Letsencrypt.");
-		return 0;
+		return FALSE;
 	}
 
-	return 1;
+	return TRUE;
 }
 
 void

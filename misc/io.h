@@ -32,6 +32,8 @@
 #include <stddef.h>
 #include <stdint.h>
 
+#include "misc/default.h"
+
 extern const char *IOErrors[];
 
 /**
@@ -40,14 +42,14 @@ extern const char *IOErrors[];
  * int			boolean: non-blocking or not
  */
 int
-IOCreateSocket(uint16_t, int);
+IOCreateSocket(uint16_t, bool);
 
 /**
  * Parameters:
  * int			the file descriptor
  * size_t		the timeout in microseconds
  */
-int
+bool
 IOTimeoutAvailableData(int, size_t);
 
 int
