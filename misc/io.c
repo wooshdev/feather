@@ -91,7 +91,25 @@ IOCreateSocket(uint16_t port, bool nonBlocking) {
 	}
 
 	if (bind(sockfd, (struct sockaddr *)&addr, sizeof(addr)) == -1) {
-		perror("IOCreateSocket bind");
+		perror(ANSI_COLOR_RED"[IOCreateSocket] E: bind name to socket failure"
+			ANSI_COLOR_RESET);
+
+		fprintf(stderr, ANSI_COLOR_RED
+			  "\nFailed to use the %hu port specified above.\n"
+			  ANSI_COLOR_RESET
+			  "One of the following problems may have occurred:\n\n"
+			  ANSI_COLOR_BLUE" • You don't have sufficied permisions.\n"
+			  ANSI_COLOR_RESET"   This webserver uses ports below"
+			  " 1024, which are restricted.\n"
+			  "   On Linux, check if the CAP_NET_BIND_SERVICE permission has "
+			  "been granted.\n\n"
+			  ANSI_COLOR_BLUE" • A web server is already running.\n"
+			  ANSI_COLOR_RESET"   You can check if this is the case by "
+			  "executing the following command: \n      sudo netstat -nlp | "
+			  "grep :%hu\n   If nothing pops up, no service is using the port."
+			  ANSI_COLOR_RESETLN"\n",
+			  port, port);
+
 		close(sockfd);
 		return -5;
 	}
