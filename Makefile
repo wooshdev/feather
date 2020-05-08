@@ -46,6 +46,8 @@ bin/dirinfo:
 	@mkdir bin/misc
 	@mkdir bin/redir
 	@mkdir bin/tests
+	@mkdir bin/tests/base
+	@mkdir bin/tests/base/global_state
 
 bin/base/global_state.so: base/global_state.c \
 	base/global_state.h
@@ -119,6 +121,17 @@ bin/tests/redir: tests/redir/main.c \
 		bin/base/global_state.so bin/http/syntax.so bin/misc/io.so \
 		bin/http/response_headers.so bin/misc/statistics.so \
 		bin/misc/options.so bin/http/strings.so
+
+bin/tests/base/global_state/gspopulateproductname.so: \
+	tests/base/global_state/gspopulateproductname.c \
+	base/global_state.c \
+	base/global_state.h \
+	bin/misc/options.so
+	$(CC) $(CFLAGS) -o $@ tests/base/global_state/gspopulateproductname.c \
+		bin/misc/io.so \
+		bin/misc/statistics.so \
+		$(LDFLAGS)
+
 
 # Destroys ALL build files, but will leave the source files intact.
 clean:

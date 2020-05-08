@@ -50,6 +50,11 @@
 
 #define LINUX_DIST_FILE "/etc/lsb-release"
 
+/* Use function macros for testing */
+#ifndef FUNC_UNAME
+#define FUNC_UNAME uname
+#endif
+
 /* From the header file */
 int GSMainLoop;
 
@@ -310,7 +315,7 @@ GSPopulateProductName(void) {
 	sizeLeft = sizeof(internalProductName) / sizeof(internalProductName[0]) - 5;
 	warn = 0;
 
-	if (uname(&systemName) == -1) {
+	if (FUNC_UNAME(&systemName) == -1) {
 		perror("uname");
 		fputs(ANSI_COLOR_RED"[GSInit] [GSPopulateProductName] Failed to "
 			  "retrieve system information."ANSI_COLOR_RESETLN, stdout);
@@ -582,6 +587,7 @@ GSPopulateProductName(void) {
 		str[1] = '\0';
 	}
 
+#ifndef GS_NO_POPULATE_PRODUCTNAME_WARNINGS
 	if (warn) {
 		printf(ANSI_COLOR_YELLOW"[Warning] Using sensitive information about "
 			   "your system is discouraged due to security reasons. It can "
@@ -593,8 +599,11 @@ GSPopulateProductName(void) {
 			   " restricted testing environment, you could to choose to ignore"
 			   " this warning."ANSI_COLOR_RESETLN);
 	}
+#endif
 
+#ifndef GS_NO_POPULATE_PRODUCTNAME_EVAL_OUTPUT
 	printf("GSPopulateProductName: '%s'\n", GSServerProductName);
+#endif
 
 	return TRUE;
 }
