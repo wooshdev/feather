@@ -140,8 +140,9 @@ compressBrotli(const char *fileName, struct FCEntry *entry) {
 	}
 
 	if (!trySave(fileName, &entry->br, entry->br.encoding)) {
-		fputs(ANSI_COLOR_RED"[Cache::compressBrotli] Failed to save compressed file."
-			  ANSI_COLOR_RESETLN, stderr);
+		fprintf(stderr, ANSI_COLOR_YELLOW"[Cache::compressBrotli] Failed to "
+				"save a compressed file with uncompressed name: '%s'"
+				ANSI_COLOR_RESETLN, fileName);
 	}
 
 	return TRUE;
