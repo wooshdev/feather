@@ -1,8 +1,12 @@
 # Makefile work is licensed under a Creative Commons Attribution-ShareAlike 4.0
 # International License. See <https://creativecommons.org/licenses/by-sa/4.0/>.
 
-ADDITIONAL_CFLAGS =
-ADDITIONAL_LDFLAGS =
+.PHONY: clean
+
+include UserVariables.mk
+
+ADDITIONAL_CFLAGS ?=
+ADDITIONAL_LDFLAGS ?=
 CC = clang
 CFLAGS = -Wall -Wextra -Wpedantic -g -I. $(ADDITIONAL_CFLAGS)
 LDFLAGS = -pthread -lm $(ADDITIONAL_LDFLAGS)
