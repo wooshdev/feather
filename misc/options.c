@@ -66,8 +66,11 @@ internalSetupCertificatesLetsencrypt() {
 	struct dirent *dir;
 
 	d = opendir(internalPrefixPath);
-	if (!d)
+	if (!d) {
+		perror(ANSI_COLOR_RED"Failed to open Letsencrypt directory"
+			   ANSI_COLOR_RESET);
 		return 0;
+	}
 
 	while ((dir = readdir(d)) != NULL) {
 		if (strcmp(dir->d_name, ".") == 0 || strcmp(dir->d_name, "..") == 0)
