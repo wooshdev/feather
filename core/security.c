@@ -313,7 +313,7 @@ alpnHandler(SSL *ssl, const unsigned char **out, unsigned char *outlen,
 			compareALPN(ALPN_HTTP1, in + pos, size)) {
 			wasHTTP1Found = 1;
 		}
-#ifndef OPTIONS_DISABLE_HTTP2
+#ifdef OPTIONS_ENABLE_HTTP2
 		else if (size == ALPN_HTTP2_LEN && 
 			compareALPN(ALPN_HTTP2, in + pos, size)) {
 			*out = ALPN_HTTP2;

@@ -86,15 +86,15 @@ If you wish to use a different compiler than the preconfigured `clang` compiler,
 ```bash
 $ make CC=gcc
 ```
-If you wish to disable the experimental HTTP/2 implementation, add `ADDITIONAL_CFLAGS=-DOPTIONS_DISABLE_HTTP2`, e.g.:
+If you wish to enable the experimental HTTP/2 implementation, add the `ADDITIONAL_CFLAGS=-DOPTIONS_ENABLE_HTTP2` flag, e.g.:
 ```bash
-$ make ADDITIONAL_CFLAGS=-DOPTIONS_DISABLE_HTTP2
+$ make ADDITIONAL_CFLAGS=-DOPTIONS_ENABLE_HTTP2
 ```
-This will set the `OPTIONS_DISABLE_HTTP2` macro and informs the compilation that HTTP/2 shouldn't be used. To combine options, simply concatenate:
+This will set the `OPTIONS_ENABLE_HTTP2` macro and informs the compilation that HTTP/2 should be used. To combine options, simply concatenate:
 ```bash
-$ make ADDITIONAL_CFLAGS=-DOPTIONS_DISABLE_HTTP2 CC=gcc
+$ make ADDITIONAL_CFLAGS=-DOPTIONS_ENABLE_HTTP2 CC=gcc
 ```
-The above will use the `GCC` compiler and disable HTTP/2.
+The above will use the `GCC` compiler and enable HTTP/2.
 
 ## Starting the server
 The executable will compiled to `./server` in the current working directory, and isn't put in `/usr/bin`, `/usr/local/bin` or some other system directory. Also, no `init`/`systemd` intergration is available, thus running the server simply invoke the `./server` binary, either in tmux/screen or using jobs. Future integration with more systems may be expected.
