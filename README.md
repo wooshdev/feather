@@ -8,7 +8,6 @@ Currently the following features are present:
 - The industry standard HTTP/1.1 protocol is used to communicate with clients (webbrowsers et al.)
 - Client-side Caching is enabled by handling conditional requests. This is achieved by sending a `Last-Modified` header and validating the future request header `If-Modified-Since`.
 - File system overhead is reduced by caching files in memory.
-- Proper system integration with `init`/`systemd` and the `/var/log/` system.
 
 In the future, the following features can be expected:
 
@@ -16,6 +15,7 @@ In the future, the following features can be expected:
 - [HTTP/2](https://en.wikipedia.org/wiki/HTTP/2)
 - Online Certificate Status Protocol ([OCSP](https://en.wikipedia.org/wiki/Online_Certificate_Status_Protocol))
 - A configure script (maybe Autotools, Meson, etc.)
+- Proper system integration with `init`/`systemd` and the `/var/log/` system.
 
 ## Platform Support <a name="platform-support"></a>
 This code is designed to primarily use POSIX and C89 functions, but some minimal C99-standard functions and some libraries 
