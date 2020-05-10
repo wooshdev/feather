@@ -77,7 +77,8 @@ int main(void) {
 	act.sa_handler = CatchSignal;
 	act.sa_flags = 0;
 
-	if (sigaction(SIGINT, &act, NULL) == -1 || sigaction(SIGPIPE, &act, NULL) == -1) {
+	if (sigaction(SIGINT,	&act, NULL) == -1 || 
+		sigaction(SIGPIPE,	&act, NULL) == -1) {
 		perror("[Main] sigaction() failed");
 		StopWithError("SignalSetup", "Failed to set signal handler.");
 	}
@@ -135,7 +136,8 @@ int main(void) {
 
 		currentCount = SMGetPageTraffic();
 		if (currentCount != lastCount) {
-			printf(ANSI_COLOR_CYAN"Traffic> "ANSI_COLOR_MAGENTA"%zu"ANSI_COLOR_RESETLN, currentCount);
+			printf(ANSI_COLOR_CYAN"Traffic> "ANSI_COLOR_MAGENTA"%zu"
+				   ANSI_COLOR_RESETLN, currentCount);
 			lastCount = currentCount;
 		}
 	}

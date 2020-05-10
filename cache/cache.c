@@ -172,10 +172,12 @@ followDirectory(const char *name, int indent) {
 	while ((entry = readdir(dir)) != NULL) {
 		if (entry->d_type == DT_DIR) {
 			char pathBuffer[1024];
-			if (strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0)
+			if (strcmp(entry->d_name, ".") == 0 ||
+				strcmp(entry->d_name, "..") == 0)
 				continue;
 
-			snprintf(pathBuffer, sizeof(pathBuffer), "%s/%s", name, entry->d_name);
+			snprintf(pathBuffer, sizeof(pathBuffer), "%s/%s", name, 
+					 entry->d_name);
 
 			if (!followDirectory(pathBuffer, indent + 2)) {
 				closedir(dir);

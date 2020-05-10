@@ -66,7 +66,8 @@ IOCreateSocket(uint16_t port, bool nonBlocking) {
 		return -1;
 
 	flag = 1;
-	if (setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &flag, sizeof(int)) == -1) {
+	if (setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &flag, sizeof(int)) 
+			== -1) {
 		perror("IOCreateSocket setsockopt");
 		close(sockfd);
 		return -2;

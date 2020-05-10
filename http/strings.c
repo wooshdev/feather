@@ -47,4 +47,5 @@ const char *HTTPStatus304NotModified = "304 Not Modified";
 const char *HTTPStatus400BadRequest = "400 Bad Request";
 const char *HTTPStatus404NotFound = "404 Not Found";
 const char *HTTPStatus500NotImplemented = "500 Not Implemented";
-const char *HTTPStatus505HTTPVersionNotSupported = "505 HTTP Version Not Supported";
+const char *HTTPStatus505HTTPVersionNotSupported = 
+				"505 HTTP Version Not Supported";

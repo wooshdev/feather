@@ -221,7 +221,8 @@ CSSSetupClient(int sockfd, CSSClient *client) {
 	ret = SSL_accept(ssl);
 	if (ret <= 0) {
 		/*
-		printf("SSL_get_error from SSL_accept is %i\n", SSL_get_error(ssl, ret));
+		printf("SSL_get_error from SSL_accept is %i\n", 
+			   SSL_get_error(ssl, ret));
 		ERR_print_errors_fp(stderr);
 		*/
 		CSSDestroyClient(ssl);

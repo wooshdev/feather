@@ -148,7 +148,8 @@ CSHandleHTTP1(CSSClient client) {
 /**
  *		Disable this log for now.
  *
- * 		printf("handleRequest> took %f ms\n", (after - before)*1e3/CLOCKS_PER_SEC);
+ * 		printf("handleRequest> took %f ms\n", 
+ * 			   (after - before) * 1e3 / CLOCKS_PER_SEC);
  */
 	} while (status);
 }
@@ -324,7 +325,9 @@ handleRequest(CSSClient client) {
 				if (!CSSReadClient(client, request->buffer, 1))
 					return recoverError(client, HTTP_ERROR_READ, request);
 				if (request->buffer[0] != '\n')
-					return recoverError(client, HTTP_ERROR_HEADER_INVALID_VALUE, request);
+					return recoverError(client, 
+										HTTP_ERROR_HEADER_INVALID_VALUE,
+										request);
 				request->headers[request->headerCount].value[pos] = '\0';
 				break;
 			}
