@@ -41,6 +41,8 @@ class Characters:
 	TABULATOR = 0x9
 
 fileNames = None
+totalErrors = 0
+totalErrorFiles = 0
 
 if len(sys.argv) == 1:
 	fileNames = [os.path.join(dp, f) for dp, dn, filenames in os.walk(".")
@@ -88,4 +90,20 @@ for fileName in fileNames:
 					errors += 1
 					print("Line %s%s:%i%s ends with a space"
 						% (Colors.BLUE, fileName, linenr, Colors.RESET))
-		print("File '%s' has %i error(s)" % (fileName, errors))
+		totalErrors += errors
+		if errors == 1:
+			totalErrorFiles += 1
+			print("File '%s' has 1 error" % fileName)
+		elif errors > 1:
+			totalErrorFiles += 1
+			print("File '%s' has %i error(s)" % (fileName, errors))
+
+if totalErrors == 0:
+	print("No errors found!")
+else:
+	print("%s%i%s error%s in %s%i%s file%s." % (
+		Colors.BLUE, totalErrors, Colors.RESET,
+		"" if totalErrors == 1 else "s",
+		Colors.BLUE, totalErrorFiles, Colors.RESET,
+		"" if totalErrorFiles == 1 else "s"
+	))
