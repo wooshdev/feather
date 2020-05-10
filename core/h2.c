@@ -25,7 +25,7 @@
  * CONTRACT,  STRICT  LIABILITY,  OR  TORT  (INCLUDING NEGLIGENCE OR OTHERWISE)
  * ARISING  IN  ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
- */ 
+ */
 
 #include "h2.h"
 
@@ -168,7 +168,7 @@ checkPreface(CSSClient client) {
 	if (!CSSReadClient(client, buf, 24))
 		return 0;
 
-	return memcmp(buf, HTTP2Preface, 24) == 0;	
+	return memcmp(buf, HTTP2Preface, 24) == 0;
 }
 
 bool

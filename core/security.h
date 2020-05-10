@@ -60,7 +60,7 @@ enum CSProtocol
 CSSGetProtocol(CSSClient);
 
 bool
-CSSReadClient(CSSClient, char *, size_t); 
+CSSReadClient(CSSClient, char *, size_t);
 
 int
 CSSSetupClient(int, CSSClient *);

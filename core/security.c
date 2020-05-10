@@ -25,7 +25,7 @@
  * CONTRACT,  STRICT  LIABILITY,  OR  TORT  (INCLUDING NEGLIGENCE OR OTHERWISE)
  * ARISING  IN  ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
- */ 
+ */
 
 #include "security.h"
 
@@ -70,9 +70,9 @@ static const unsigned char ALPN_HTTP2[] = {
 #define ALPN_HTTP1_LEN 8
 #define ALPN_HTTP2_LEN 2
 
-static int 
-alpnHandler(SSL *ssl, 
-			const unsigned char **out, 
+static int
+alpnHandler(SSL *ssl,
+			const unsigned char **out,
 			unsigned char *outlen,
 			const unsigned char *in,
 			unsigned int inlen,
@@ -167,7 +167,7 @@ CSSetupSecurityManager(void) {
 	X509_free(cert);
 
 	SSL_CTX_set_alpn_select_cb(SSLContext, alpnHandler, NULL);
-	
+
 	return 1;
 }
 
@@ -222,7 +222,7 @@ CSSSetupClient(int sockfd, CSSClient *client) {
 	ret = SSL_accept(ssl);
 	if (ret <= 0) {
 		/*
-		printf("SSL_get_error from SSL_accept is %i\n", 
+		printf("SSL_get_error from SSL_accept is %i\n",
 			   SSL_get_error(ssl, ret));
 		ERR_print_errors_fp(stderr);
 		*/
@@ -287,7 +287,7 @@ compareALPN(const unsigned char *a,
 			const unsigned char *b,
 			size_t size) {
 	size_t i;
-	
+
 	for (i = 0; i < size; i++)
 		if (((unsigned char) a[i]) != b[i])
 			return 0;
@@ -306,17 +306,17 @@ alpnHandler(SSL *ssl, const unsigned char **out, unsigned char *outlen,
 
 	while (pos < inlen) {
 		size = in[pos++];
-		
+
 		/* Check malformed data */
 		if (size == 0 || size + pos > inlen || size + pos > 254)
 			return SSL_TLSEXT_ERR_ALERT_FATAL;
 
-		if (size == ALPN_HTTP1_LEN && 
+		if (size == ALPN_HTTP1_LEN &&
 			compareALPN(ALPN_HTTP1, in + pos, size)) {
 			wasHTTP1Found = 1;
 		}
 #ifdef OPTIONS_ENABLE_HTTP2
-		else if (size == ALPN_HTTP2_LEN && 
+		else if (size == ALPN_HTTP2_LEN &&
 			compareALPN(ALPN_HTTP2, in + pos, size)) {
 			*out = ALPN_HTTP2;
 			*outlen = size;
@@ -331,7 +331,7 @@ alpnHandler(SSL *ssl, const unsigned char **out, unsigned char *outlen,
 		*outlen = size;
 		return SSL_TLSEXT_ERR_OK;
 	}
-	
+
 	return SSL_TLSEXT_ERR_ALERT_FATAL;
 }
 
@@ -346,7 +346,7 @@ CSSGetProtocol(CSSClient client) {
 
 	if (len == ALPN_HTTP1_LEN && compareALPN(data, ALPN_HTTP1, ALPN_HTTP1_LEN))
 		return CSPROT_HTTP1;
-	
+
 	if (len == ALPN_HTTP2_LEN && compareALPN(data, ALPN_HTTP2, ALPN_HTTP2_LEN))
 		return CSPROT_HTTP2;
 

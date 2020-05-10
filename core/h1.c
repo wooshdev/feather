@@ -149,7 +149,7 @@ CSHandleHTTP1(CSSClient client) {
 /**
  *		Disable this log for now.
  *
- * 		printf("handleRequest> took %f ms\n", 
+ * 		printf("handleRequest> took %f ms\n",
  * 			   (after - before) * 1e3 / CLOCKS_PER_SEC);
  */
 	} while (status);
@@ -268,12 +268,12 @@ handleRequest(CSSClient client) {
 		/* Check size of buffer */
 		if (request->headerCount == request->headersSize) {
 			request->headersSize += HEADER_STEP_SIZE;
-			newHeaders = realloc(request->headers, request->headersSize 
+			newHeaders = realloc(request->headers, request->headersSize
 									* sizeof(struct HTTPHeader));
 			if (!newHeaders) {
 				free(request->headers);
 				request->headers = NULL;
-				return recoverError(client, 
+				return recoverError(client,
 									HTTP_ERROR_HEADER_ALLOCATION_FAILURE,
 									request);
 			}
@@ -284,7 +284,7 @@ handleRequest(CSSClient client) {
 		request->headers[request->headerCount].name[0] = request->buffer[0];
 		request->headers[request->headerCount].name[1] = request->buffer[1];
 
-		if (!HTTPIsTokenCharacter(request->buffer[0]) || 
+		if (!HTTPIsTokenCharacter(request->buffer[0]) ||
 			!HTTPIsTokenCharacter(request->buffer[1]))
 			return recoverError(client, HTTP_ERROR_HEADER_INVALID_NAME,
 								request);
@@ -296,7 +296,7 @@ handleRequest(CSSClient client) {
 			if (request->buffer[0] == ':')
 				break;
 			if (!HTTPIsTokenCharacter(request->buffer[0]))
-				return recoverError(client, HTTP_ERROR_HEADER_INVALID_NAME, 
+				return recoverError(client, HTTP_ERROR_HEADER_INVALID_NAME,
 									request);
 			request->headers[request->headerCount].name[pos++] =
 				request->buffer[0];
@@ -326,17 +326,17 @@ handleRequest(CSSClient client) {
 				if (!CSSReadClient(client, request->buffer, 1))
 					return recoverError(client, HTTP_ERROR_READ, request);
 				if (request->buffer[0] != '\n')
-					return recoverError(client, 
+					return recoverError(client,
 										HTTP_ERROR_HEADER_INVALID_VALUE,
 										request);
 				request->headers[request->headerCount].value[pos] = '\0';
 				break;
 			}
 
-			if (request->buffer[0] != '\t' && request->buffer[0] != ' ' && 
+			if (request->buffer[0] != '\t' && request->buffer[0] != ' ' &&
 				(request->buffer[0] < 0x21 || request->buffer[0] > 0x7E)) {
 				request->headers[request->headerCount].value[pos - 1] = '\0';
-				return recoverError(client, HTTP_ERROR_HEADER_INVALID_VALUE, 
+				return recoverError(client, HTTP_ERROR_HEADER_INVALID_VALUE,
 									request);
 			}
 			request->headers[request->headerCount].value[pos++] =
@@ -416,13 +416,13 @@ handleRequest(CSSClient client) {
 		timingsBufferingValue, timingsBufferingUnit,
 		(size_t) ((timings.readMethod.after - timings.readMethod.before) *
 		(size_t) 1e6 / CLOCKS_PER_SEC),
-		(size_t) ((timings.readPath.after - timings.readPath.before) * 
+		(size_t) ((timings.readPath.after - timings.readPath.before) *
 		(size_t) 1e6 / CLOCKS_PER_SEC),
-		(size_t) ((timings.readVersion.after - timings.readVersion.before) * 
+		(size_t) ((timings.readVersion.after - timings.readVersion.before) *
 		(size_t) 1e6 / CLOCKS_PER_SEC),
-		(size_t) ((timings.readHeaders.after - timings.readHeaders.before) * 
+		(size_t) ((timings.readHeaders.after - timings.readHeaders.before) *
 		(size_t) 1e6 / CLOCKS_PER_SEC),
-		(size_t) ((timings.handling.after - timings.handling.before) * 
+		(size_t) ((timings.handling.after - timings.handling.before) *
 		(size_t) 1e6 / CLOCKS_PER_SEC),
 		((timings.flags & TF_CLIENT_CACHED) ? ANSI_COLOR_BLUE";"
 			ANSI_COLOR_YELLOW " client-cached" : ""),
@@ -473,7 +473,7 @@ recoverError(CSSClient client, enum HTTPError error,
 		"HTTP_ERROR_READ"
 	};
 
-	printf("error was: %s (client is %p, request is %p)\n", names[error], 
+	printf("error was: %s (client is %p, request is %p)\n", names[error],
 		   (void *) client, (void *) request);
 	*/
 
@@ -484,7 +484,7 @@ recoverError(CSSClient client, enum HTTPError error,
 	free(request);
 
 	/* TODO Create a 'personalized' error message for each error. */
-	const char document[] = 
+	const char document[] =
 		"<!doctype html>"
 		"<html>"
 		"<head>"
@@ -535,7 +535,7 @@ recoverError(CSSClient client, enum HTTPError error,
 	if (!ret)
 		return FALSE;
 
-	ret = CSSWriteClient(client, document, 
+	ret = CSSWriteClient(client, document,
 						 sizeof(document) / sizeof(document[0]) - 1);
 
 	if (!ret)
@@ -626,14 +626,14 @@ handleRequestStage2(CSSClient client, struct HTTPRequest *request,
 	if (isUnchanged) {
 		timings->flags |= TF_CLIENT_CACHED;
 
-		buf = malloc(strlen(messageNotModified) + strlen(date) + 
+		buf = malloc(strlen(messageNotModified) + strlen(date) +
 					 strlen(GSServerProductName) + 1);
 		if (!buf) {
 			perror("Allocation failure");
 			return FALSE;
 		}
 
-		formattedBufSize = sprintf(buf, messageNotModified, date, 
+		formattedBufSize = sprintf(buf, messageNotModified, date,
 								   GSServerProductName);
 		ret = CSSWriteClient(client, buf, formattedBufSize);
 		free(buf);
@@ -654,9 +654,9 @@ handleRequestStage2(CSSClient client, struct HTTPRequest *request,
 		strlen(HTTPStatus200OK) +
 		strlen(result.encoding) +
 		DOCUMENT_SIZE_CHARACTER_SIZE +
-		strlen(mediaInfo) + 
-		strlen(date) + 
-		strlen(dateLastModified) + 
+		strlen(mediaInfo) +
+		strlen(date) +
+		strlen(dateLastModified) +
 		strlen(GSServerProductName) +
 		1
 	);
