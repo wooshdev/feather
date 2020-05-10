@@ -27,6 +27,7 @@
 # ARISING  IN  ANY  WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
+import os
 import sys
 
 class Colors:
@@ -35,34 +36,40 @@ class Colors:
 	RESET = "\033[0m"
 	YELLOW = "\033[33m"
 
+fileNames = None
+
 if len(sys.argv) == 1:
-	print(Colors.RED + "E: Please specify a file to lint!")
-	print("Command Line Usage:%s %s <filename>" % (Colors.RESET, sys.argv[0]))
-	sys.exit()
+	fileNames = [os.path.join(dp, f) for dp, dn, filenames in os.walk(".")
+			for f in filenames if os.path.splitext(f)[1] == '.c'
+							   or os.path.splitext(f)[1] == '.h']
+else:
+	fileNames = sys.argv[1:]
 
-try:
-	fd = open(sys.argv[1])
-except (IOError, OSError) as e:
-	print("%s%s" % (Colors.RED, e))
-	print("Failed to open that file.%s" % Colors.RESET)
-	sys.exit()
+for fileName in fileNames:
+	try:
+		fd = open(fileName)
+	except (IOError, OSError) as e:
+		print("%s%s" % (Colors.RED, e))
+		print("Failed to open that file.%s" % Colors.RESET)
+		sys.exit()
 
-with fd:
-	linenr = 0
-	errors = 0
-	for line in fd:
-		linenr += 1
-		count = 0
-		for char in [*line]:
-			if ord(char) == 0x9: # A tabulator character
-				count += 4 - (count % 4)
-			elif char != '\n':
-				count += 1
-		if count > 80:
-			errors += 1
-			print("Line %s%s:%i%s is too long: (%s%i%s characters)\n%s%s%s" % (
-				Colors.BLUE, sys.argv[1], linenr, Colors.RESET,
-				Colors.BLUE, count, Colors.RESET,
-				Colors.YELLOW, line.strip(), Colors.RESET
-			))
-	print("File '%s' has %i error(s)" % (sys.argv[1], errors))
+	with fd:
+		linenr = 0
+		errors = 0
+		for line in fd:
+			linenr += 1
+			count = 0
+			for char in [*line]:
+				if ord(char) == 0x9: # A tabulator character
+					count += 4 - (count % 4)
+				elif char != '\n':
+					count += 1
+			if count > 80:
+				errors += 1
+				print("Line %s%s:%i%s is too long: (%s%i%s characters)\n%s%s%s"
+				% (
+					Colors.BLUE, fileName, linenr, Colors.RESET,
+					Colors.BLUE, count, Colors.RESET,
+					Colors.YELLOW, line.strip(), Colors.RESET
+				))
+		print("File '%s' has %i error(s)" % (fileName, errors))
