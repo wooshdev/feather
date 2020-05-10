@@ -177,7 +177,7 @@ followDirectory(const char *name, int indent) {
 				strcmp(entry->d_name, "..") == 0)
 				continue;
 
-			snprintf(pathBuffer, sizeof(pathBuffer), "%s/%s", name, 
+			snprintf(pathBuffer, sizeof(pathBuffer), "%s/%s", name,
 					 entry->d_name);
 
 			if (!followDirectory(pathBuffer, indent + 2)) {
