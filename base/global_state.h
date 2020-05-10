@@ -86,4 +86,3 @@ bool
 GSScheduleChildThread(enum GSThreadParent, void *(*) (void *), int);
 
 #endif /* BASE_GLOBAL_STATE_H */
- 

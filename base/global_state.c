@@ -25,7 +25,7 @@
  * CONTRACT,  STRICT  LIABILITY,  OR  TORT  (INCLUDING NEGLIGENCE OR OTHERWISE)
  * ARISING  IN  ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
- */ 
+ */
 
 #include "global_state.h"
 
@@ -80,7 +80,7 @@ static const char *GSParentNames[] = {
 };
 
 /**
- * Child Scheduling 
+ * Child Scheduling
  */
 /* How many children, a.ka. threads may be made */
 static const size_t GSChildSize = 500;
@@ -107,7 +107,7 @@ GSDestroy(void) {
 	time.tv_sec = 0;
 	time.tv_nsec = 100000000; /* 100 ms */
 	nanosleep(&time, NULL);
-	
+
 	/* kill if they don't stop */
 	for (i = 0; i < GSChildSize; i++) {
 		if (GSChildThreads[i].sockfd > -1) {
@@ -539,7 +539,7 @@ GSPopulateProductName(void) {
 				sizeLeft -= valueSize;
 				pos = chrLn - buf + 1;
 				llen -= chrLn - buf + 1 - pos;
-			} else if (OMGSSystemInformationInServerHeader 
+			} else if (OMGSSystemInformationInServerHeader
 				& OSIL_DISTDESCRIPTION
 			 && strcmp(buf + pos, "DISTRIB_DESCRIPTION") == 0) {
 				int	isQuoted; /* bool */
