@@ -539,7 +539,8 @@ GSPopulateProductName(void) {
 				sizeLeft -= valueSize;
 				pos = chrLn - buf + 1;
 				llen -= chrLn - buf + 1 - pos;
-			} else if (OMGSSystemInformationInServerHeader & OSIL_DISTDESCRIPTION
+			} else if (OMGSSystemInformationInServerHeader 
+				& OSIL_DISTDESCRIPTION
 			 && strcmp(buf + pos, "DISTRIB_DESCRIPTION") == 0) {
 				int	isQuoted; /* bool */
 
