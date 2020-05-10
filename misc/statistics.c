@@ -88,16 +88,16 @@ SMEnd(void) {
 		fputs("Ran for ", stdout);
 
 		if (timeBetween > 6048e5) {
-			amount = timeBetween / 6048e6;
-			timeBetween -= amount * 6048e6;
+			amount = timeBetween / 6048e5;
+			timeBetween -= amount * 6048e5;
 			printf("%s%zu week%s", (hasPrinted ? ", " : ""), amount,
 				   (amount == 1 ? "" : "s"));
 			hasPrinted = 1;
 		}
 
 		if (timeBetween > 864e5) {
-			amount = timeBetween / 36e5;
-			timeBetween -= amount * 36e5;
+			amount = timeBetween / 864e5;
+			timeBetween -= amount * 864e5;
 			printf("%s%zu day%s", (hasPrinted ? ", " : ""), amount,
 				   (amount == 1 ? "" : "s"));
 			hasPrinted = 1;
