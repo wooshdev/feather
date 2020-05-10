@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 
 # BSD-2-Clause
 # 
@@ -53,8 +53,8 @@ with fd:
 	for line in fd:
 		linenr += 1
 		count = 0
-		for char in line:
-			if char == '\t':
+		for char in [*line]:
+			if ord(char) == 0x9: # A tabulator character
 				count += 4 - (count % 4)
 			elif char != '\n':
 				count += 1
