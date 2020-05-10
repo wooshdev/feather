@@ -49,7 +49,7 @@ struct H2Frame {
 	uint8_t		  type;
 	uint8_t		  flags;
 	uint32_t	  stream;
-	void		 *payload;	
+	void		 *payload;
 };
 
 #endif /* HTTP2_FRAME_H */
