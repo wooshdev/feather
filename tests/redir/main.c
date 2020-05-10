@@ -174,7 +174,7 @@ bool PayloadTest(const void *inBuf, size_t inBufSize, void *outBuf,
 		debugInfo[1] = result[10];
 		debugInfo[2] = result[11];
 		debugInfo[3] = '\0';
-		
+
 		fprintf(stderr, "[PayloadTest] [Error] Non 3xx status code! Status "
 				"code was '%s'\n", debugInfo);
 		close(fd[0]);
