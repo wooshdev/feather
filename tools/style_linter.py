@@ -1,20 +1,20 @@
 #!/usr/bin/python3
 
 # BSD-2-Clause
-# 
+#
 # Copyright (c) 2020 Tristan
 # All Rights Reserved.
-# 
+#
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
-# 
+#
 # 1. Redistributions of source code must retain the above copyright notice,
 #    this list of conditions and the following disclaimer.
-# 
+#
 # 2. Redistributions in binary form must reproduce the above copyright notice,
 #    this list of conditions and the following disclaimer in the documentation
 #    and/or other materials provided with the distribution.
-# 
+#
 # THIS  SOFTWARE  IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
 # AND  ANY  EXPRESS  OR  IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
 # IMPLIED  WARRANTIES  OF MERCHANTABILITY  AND FITNESS FOR A PARTICULAR PURPOSE
@@ -35,6 +35,10 @@ class Colors:
 	RED = "\033[31m"
 	RESET = "\033[0m"
 	YELLOW = "\033[33m"
+
+class Characters:
+	SPACE = 0x20
+	TABULATOR = 0x9
 
 fileNames = None
 
@@ -59,11 +63,13 @@ for fileName in fileNames:
 		for line in fd:
 			linenr += 1
 			count = 0
-			for char in [*line]:
-				if ord(char) == 0x9: # A tabulator character
+			buf = [*line]
+			for char in buf:
+				if ord(char) == Characters.TABULATOR:
 					count += 4 - (count % 4)
 				elif char != '\n':
 					count += 1
+			# Line length checking
 			if count > 80:
 				errors += 1
 				print("Line %s%s:%i%s is too long: (%s%i%s characters)\n%s%s%s"
@@ -72,4 +78,14 @@ for fileName in fileNames:
 					Colors.BLUE, count, Colors.RESET,
 					Colors.YELLOW, line.strip(), Colors.RESET
 				))
+			# End-of-line checking
+			if len(buf) > 1:
+				if ord(buf[-2]) == Characters.TABULATOR:
+					errors += 1
+					print("Line %s%s:%i%s ends with a tabulator"
+						% (Colors.BLUE, fileName, linenr, Colors.RESET))
+				elif ord(buf[-2]) == Characters.SPACE:
+					errors += 1
+					print("Line %s%s:%i%s ends with a space"
+						% (Colors.BLUE, fileName, linenr, Colors.RESET))
 		print("File '%s' has %i error(s)" % (fileName, errors))
