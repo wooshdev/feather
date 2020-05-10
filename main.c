@@ -74,11 +74,11 @@ int main(void) {
 		perror("[Main] sigemptyset() failed");
 		StopWithError("SignalSetup", "Failed to set signal handler.");
 	}
-  
+
 	act.sa_handler = CatchSignal;
 	act.sa_flags = 0;
 
-	if (sigaction(SIGINT,	&act, NULL) == -1 || 
+	if (sigaction(SIGINT,	&act, NULL) == -1 ||
 		sigaction(SIGPIPE,	&act, NULL) == -1) {
 		perror("[Main] sigaction() failed");
 		StopWithError("SignalSetup", "Failed to set signal handler.");
