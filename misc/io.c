@@ -25,7 +25,7 @@
  * CONTRACT,  STRICT  LIABILITY,  OR  TORT  (INCLUDING NEGLIGENCE OR OTHERWISE)
  * ARISING  IN  ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
- */ 
+ */
 
 #include "io.h"
 
@@ -67,7 +67,7 @@ IOCreateSocket(uint16_t port, bool nonBlocking) {
 		return -1;
 
 	flag = 1;
-	if (setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &flag, sizeof(int)) 
+	if (setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &flag, sizeof(int))
 			== -1) {
 		perror("IOCreateSocket setsockopt");
 		close(sockfd);

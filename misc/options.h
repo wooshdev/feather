@@ -37,7 +37,7 @@
 
 /**
  * The system information level. You can choose to include information about
- * the host operating system on which the server is running, for debugging 
+ * the host operating system on which the server is running, for debugging
  * purposes.
  *
  * This information is sent among with requests in the form of a Server header,
