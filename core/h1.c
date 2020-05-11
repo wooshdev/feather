@@ -123,7 +123,7 @@ static const char messageNotModified[] =
 
 
 bool
-handleRequest(CSSClient);
+handleRequest(CSSClient, struct HTTPRequest *);
 
 bool
 handleRequestStage2(CSSClient, struct HTTPRequest *, struct Timings *);
@@ -136,14 +136,22 @@ writeResponse(CSSClient);
 
 void
 CSHandleHTTP1(CSSClient client) {
+	struct HTTPRequest *request;
 	bool status;
+
+	printf("malloc[before] = %zu\n", (size_t) clock());
+	request = malloc(sizeof(struct HTTPRequest));
+	printf("malloc[after] = %zu\n", (size_t) clock());
+
+	if (!request)
+		return;
 
 	do {
 		clock_t after;
 		clock_t before;
 
 		before = clock();
-		status = handleRequest(client);
+		status = handleRequest(client, request);
 		after = clock();
 
 /**
@@ -153,23 +161,20 @@ CSHandleHTTP1(CSSClient client) {
  * 			   (after - before) * 1e3 / CLOCKS_PER_SEC);
  */
 	} while (status);
+
+	free(request);
 }
 
 bool
-handleRequest(CSSClient client) {
+handleRequest(CSSClient client, struct HTTPRequest *request) {
 	bool bret;
 	float diff;
 	struct HTTPHeader *newHeaders;
 	size_t pos;
 	size_t ret;
-	struct HTTPRequest *request;
 	struct Timings timings;
 	const char *timingsBufferingUnit;
 	size_t timingsBufferingValue;
-
-	request = malloc(sizeof(struct HTTPRequest));
-	if (!request)
-		return FALSE;
 
 	request->headers = NULL;
 	request->headerCount = 0;
@@ -449,7 +454,6 @@ recoverError(CSSClient client, enum HTTPError error,
 	 * try to prepare and send a special error message. */
 	if (error == HTTP_ERROR_READ) {
 		free(request->headers);
-		free(request);
 		return FALSE;
 	}
 
@@ -481,7 +485,6 @@ recoverError(CSSClient client, enum HTTPError error,
 	 * response, so the request object isn't needed anymore and can be released
 	 */
 	free(request->headers);
-	free(request);
 
 	/* TODO Create a 'personalized' error message for each error. */
 	const char document[] =
@@ -617,7 +620,6 @@ handleRequestStage2(CSSClient client, struct HTTPRequest *request,
 
 	/* Done with request handling, so resources can be released: */
 	free(request->headers);
-	free(request);
 
 	if (result.encoding != MTE_none) {
 		timings->flags |= TF_COMPRESSED;
