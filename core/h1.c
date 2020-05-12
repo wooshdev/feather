@@ -139,9 +139,7 @@ CSHandleHTTP1(CSSClient client) {
 	struct HTTPRequest *request;
 	bool status;
 
-	printf("malloc[before] = %zu\n", (size_t) clock());
 	request = malloc(sizeof(struct HTTPRequest));
-	printf("malloc[after] = %zu\n", (size_t) clock());
 
 	if (!request)
 		return;
