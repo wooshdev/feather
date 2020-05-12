@@ -37,6 +37,9 @@
 #include "http2/settings.h"
 #include "misc/default.h"
 
+bool
+H2HandleSettings(struct H2Session *, struct H2Frame *);
+
 /* The size_t (3rd argument) is the amount of "H2Setting"s in the pointer (2nd
  * argument). */
 bool

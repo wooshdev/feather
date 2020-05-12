@@ -41,6 +41,7 @@
 #include <string.h>
 
 #include "core/security.h"
+#include "http2/debugging.h"
 #include "http2/frames/settings.h"
 #include "http2/frame.h"
 #include "http2/session.h"
@@ -56,10 +57,18 @@ bool
 checkPreface(struct H2Session *);
 
 void CSHandleHTTP2(CSSClient client) {
+	bool (*frameHandlers[])(struct H2Session *, struct H2Frame *) = {
+		NULL,
+		NULL,
+		NULL,
+		NULL,
+		H2HandleSettings
+	};
+
+	bool ret;
 	struct H2Session *session;
 
 	session = malloc(sizeof(session));
-
 	if (session == NULL) {
 		fputs(ANSI_COLOR_RED"[H2] Failed to allocate data for session"
 			  ANSI_COLOR_RESETLN, stderr);
@@ -85,6 +94,21 @@ void CSHandleHTTP2(CSSClient client) {
 		if (!H2ReadFrame(session, &session->frameBuffer))
 			break;
 
+		if (session->frameBuffer.type 
+				< sizeof(frameHandlers) / sizeof(frameHandlers[0])
+			&& frameHandlers[session->frameBuffer.type] != NULL) {
+			ret = frameHandlers[session->frameBuffer.type](session, 
+													 &session->frameBuffer);
+
+			if (!ret) {
+				
+			}
+		} else
+			printf(ANSI_COLOR_YELLOW"W: Ignored Frame %s"ANSI_COLOR_RESETLN,
+				   H2DFrameTypeNames[session->frameBuffer.type]);
+
+		/* TODO: The frameBuffer payload is literally re-malloc'ed, maybe use a
+		 * size_t + realloc solution? */
 		free(session->frameBuffer.payload);
 	}
 }
