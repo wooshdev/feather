@@ -27,6 +27,8 @@ BINARIES = \
 	bin/http/response_headers.so \
 	bin/http/strings.so \
 	bin/http/syntax.so \
+	bin/http2/frames/settings.so \
+	bin/http2/frame.so \
 	bin/misc/io.so \
 	bin/misc/options.so \
 	bin/misc/statistics.so \
@@ -47,6 +49,8 @@ bin/dirinfo:
 	@mkdir bin/cache
 	@mkdir bin/core
 	@mkdir bin/http
+	@mkdir bin/http2
+	@mkdir bin/http2/frames
 	@mkdir bin/misc
 	@mkdir bin/redir
 	@mkdir bin/tests
@@ -97,6 +101,18 @@ bin/http/strings.so: http/strings.c \
 bin/http/syntax.so: http/syntax.c \
 	http/syntax.h
 	$(CC) $(CFLAGS) -c -o $@ http/syntax.c
+
+bin/http2/frames/settings.so: http2/frames/settings.c \
+	http2/frames/settings.h \
+	http2/settings.h \
+	core/security.h \
+	misc/default.h
+	$(CC) $(CFLAGS) -c -o $@ http2/frames/settings.c
+
+bin/http2/frame.so: http2/frame.c \
+	http2/frame.h \
+	core/security.h
+	$(CC) $(CFLAGS) -c -o $@ http2/frame.c
 
 bin/misc/io.so: misc/io.c \
 	misc/io.h

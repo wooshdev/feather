@@ -27,42 +27,19 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef HTTP2_FRAME_H
-#define HTTP2_FRAME_H
+#ifndef HTTP2_FRAMES_SETTINGS_H
+#define HTTP2_FRAMES_SETTINGS_H
 
-#define H2_FRAME_DATA 0x0
-#define H2_FRAME_HEADERS 0x1
-#define H2_FRAME_PRIORITY 0x2
-#define H2_FRAME_RST_STREAM 0x3
-#define H2_FRAME_SETTINGS 0x4
-#define H2_FRAME_PUSH_PROMISE 0x5
-#define H2_FRAME_PING 0x6
-#define H2_FRAME_GOAWAY 0x7
-#define H2_FRAME_WINDOW_UPDATE 0x8
-#define H2_FRAME_CONTINUATION 0x9
-#define H2_FRAME_ALTSVC 0xA
-#define H2_FRAME_ORIGIN 0xC
-
-#include <stdint.h>
+#include <stddef.h>
 
 #include "core/security.h"
+#include "http2/session.h"
+#include "http2/settings.h"
 #include "misc/default.h"
 
-/* RFC 7540 § 4.1 */
-struct H2Frame {
-	unsigned int  length : 24;
-	uint8_t		  type;
-	uint8_t		  flags;
-	uint32_t	  stream;
-	void		 *payload;
-};
-
-struct H2Session;
-
+/* The size_t (3rd argument) is the amount of "H2Setting"s in the pointer (2nd
+ * argument). */
 bool
-H2ReadFrame(struct H2Session *, struct H2Frame *);
+H2SendSettings(struct H2Session *, struct H2Setting *, size_t);
 
-bool
-H2SendFrame(struct H2Session *, struct H2Frame *);
-
-#endif /* HTTP2_FRAME_H */
+#endif /* HTTP2_FRAMES_SETTINGS_H */
