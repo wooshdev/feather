@@ -69,7 +69,7 @@ SMBegin(void) {
 void
 SMEnd(void) {
 	clock_t endTime;
-	int hasPrinted; /* boolean */
+	bool hasPrinted;
 
 	endTime = clock();
 	hasPrinted = 0;
@@ -93,7 +93,7 @@ SMEnd(void) {
 			timeBetween -= amount * 6048e5;
 			printf("%s%zu week%s", (hasPrinted ? ", " : ""), amount,
 				   (amount == 1 ? "" : "s"));
-			hasPrinted = 1;
+			hasPrinted = TRUE;
 		}
 
 		if (timeBetween > 864e5) {
@@ -101,7 +101,7 @@ SMEnd(void) {
 			timeBetween -= amount * 864e5;
 			printf("%s%zu day%s", (hasPrinted ? ", " : ""), amount,
 				   (amount == 1 ? "" : "s"));
-			hasPrinted = 1;
+			hasPrinted = TRUE;
 		}
 
 		if (timeBetween > 36e5) {
@@ -109,7 +109,7 @@ SMEnd(void) {
 			timeBetween -= amount * 36e5;
 			printf("%s%zu hour%s", (hasPrinted ? ", " : ""), amount,
 				   (amount == 1 ? "" : "s"));
-			hasPrinted = 1;
+			hasPrinted = TRUE;
 		}
 
 		if (timeBetween > 6e4) {
@@ -117,7 +117,7 @@ SMEnd(void) {
 			timeBetween -= amount * 6e4;
 			printf("%s%zu minute%s", (hasPrinted ? ", " : ""), amount,
 				   (amount == 1 ? "" : "s"));
-			hasPrinted = 1;
+			hasPrinted = TRUE;
 		}
 
 		if (timeBetween > 1e3) {
@@ -125,14 +125,14 @@ SMEnd(void) {
 			timeBetween -= amount * 1e3;
 			printf("%s%zu second%s", (hasPrinted ? ", " : ""), amount,
 				   (amount == 1 ? "" : "s"));
-			hasPrinted = 1;
+			hasPrinted = TRUE;
 		}
 
 		if (timeBetween > 0) {
 			amount = timeBetween;
 			printf("%s%zu millisecond%s", (hasPrinted ? ", " : ""), amount,
 				   (amount == 1 ? "" : "s"));
-			hasPrinted = 1;
+			hasPrinted = TRUE;
 		}
 
 		timeBetween = endTime - MSBeginTime;

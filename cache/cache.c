@@ -221,7 +221,7 @@ FCSetup(void) {
 
 #ifdef FC_CALCULATE_USAGE
 	calculateUsage();
-#endif /* FC_CALCULATE_USAGE */
+#endif
 
 	return TRUE;
 }

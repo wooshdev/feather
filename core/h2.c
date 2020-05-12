@@ -29,16 +29,15 @@
 
 #include "h2.h"
 
-/* BSD originated header */
 #ifdef __FreeBSD__
-#include <sys/endian.h>
+	#include <sys/endian.h>
 #else
-#include <endian.h>
+	#include <endian.h>
 #endif
 
-#include <netinet/in.h>     // for ntohs
-#include <stdint.h>         // for uint8_t, uint32_t
-#include <stdlib.h>         // for free, malloc
+#include <netinet/in.h>
+#include <stdint.h>
+#include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 

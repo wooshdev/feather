@@ -100,7 +100,6 @@ RSEntrypoint(void *threadParameter) {
 			break;
 		}
 
-		/* printf("Sockfd (accepted): %i\n", sockfd); */
 		if (!GSScheduleChildThread(GSTP_REDIR, RSChildEntrypoint, sockfd)) {
 			close(sockfd);
 			fputs(

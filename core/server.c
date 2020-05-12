@@ -59,18 +59,15 @@ CSChildEntrypoint(void *threadParameter) {
 		switch (CSSGetProtocol(client)) {
 			case CSPROT_ERROR:
 				break;
-			case CSPROT_HTTP1:
-				CSHandleHTTP1(client);
-				break;
 			case CSPROT_HTTP2:
 				CSHandleHTTP2(client);
 				break;
+			case CSPROT_HTTP1:
 			case CSPROT_NONE:
 				CSHandleHTTP1(client);
 				break;
 		}
 
-		/* TODO Check ALPN */
 		CSSDestroyClient(client);
 	}
 

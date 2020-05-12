@@ -153,13 +153,6 @@ CSHandleHTTP1(CSSClient client) {
 		before = clock();
 		status = handleRequest(client, request);
 		after = clock();
-
-/**
- *		Disable this log for now.
- *
- * 		printf("handleRequest> took %f ms\n",
- * 			   (after - before) * 1e3 / CLOCKS_PER_SEC);
- */
 	} while (status);
 
 	free(request);
@@ -456,30 +449,6 @@ recoverError(CSSClient client, enum HTTPError error,
 		free(request->headers);
 		return FALSE;
 	}
-
-	/*
-	const char *const names[] = {
-		"HTTP_ERROR_FILE_NOT_FOUND",
-		"HTTP_ERROR_HEADER_ALLOCATION_FAILURE",
-		"HTTP_ERROR_HEADER_EMPTY_NAME",
-		"HTTP_ERROR_HEADER_EMPTY_VALUE",
-		"HTTP_ERROR_HEADER_INVALID_NAME",
-		"HTTP_ERROR_HEADER_INVALID_VALUE",
-		"HTTP_ERROR_HEADER_NAME_TOO_LONG",
-		"HTTP_ERROR_HEADER_VALUE_TOO_LONG",
-		"HTTP_ERROR_METHOD_UNRECOGNIZED",
-		"HTTP_ERROR_METHOD_INVALID",
-		"HTTP_ERROR_METHOD_TOO_LONG",
-		"HTTP_ERROR_PATH_INVALID",
-		"HTTP_ERROR_PATH_TOO_LONG",
-		"HTTP_ERROR_VERSION_INVALID",
-		"HTTP_ERROR_VERSION_UNKNOWN",
-		"HTTP_ERROR_READ"
-	};
-
-	printf("error was: %s (client is %p, request is %p)\n", names[error],
-		   (void *) client, (void *) request);
-	*/
 
 	/* We're done with request handling and after this we're just preparing the
 	 * response, so the request object isn't needed anymore and can be released
