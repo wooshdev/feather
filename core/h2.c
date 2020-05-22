@@ -78,6 +78,7 @@ void CSHandleHTTP2(CSSClient client) {
 	session->client = client;
 
 	if (!checkPreface(session)) {
+		free(session);
 		fputs(ANSI_COLOR_RED"[H2] Preface comparison failed"ANSI_COLOR_RESETLN,
 			  stderr);
 		return;
