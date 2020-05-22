@@ -68,7 +68,7 @@ void CSHandleHTTP2(CSSClient client) {
 	bool ret;
 	struct H2Session *session;
 
-	session = malloc(sizeof(session));
+	session = malloc(sizeof(*session));
 	if (session == NULL) {
 		fputs(ANSI_COLOR_RED"[H2] Failed to allocate data for session"
 			  ANSI_COLOR_RESETLN, stderr);
