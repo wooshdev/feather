@@ -122,7 +122,7 @@ Explanation: The two `clean` and `all` targets will insure the complete codebase
 ### clang-tidy
 [clang-tidy](https://clang.llvm.org/extra/clang-tidy) is a linter tool that can – just like `cppcheck` – analyze code for possible bugs. The tool is a clang plugin, and runs as the compiler. `clang-tidy` doesn't recognise all the Clang/GCC CFLAGS/LDFLAGS as with normal compilation, so the `CC` variable can't be replaced. To run the tool, do the following:
 ```bash
-$ clang-tidy -I . <compilation unit>
+$ clang-tidy <compilation unit> -- -I .
 ```
 Where `<compilation unit>` is a .c file, for example `main.c`.
 ### Unit Tests
