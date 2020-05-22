@@ -148,7 +148,7 @@ addFile(const char *directory, const char *fileName) {
 	}
 
 	lenPath = strlen(path);
-	memcpy(name, name + lenPath, strlen(name) - lenPath + 1);
+	memmove(name, name + lenPath, strlen(name) - lenPath + 1);
 
 	printf("Cache (name='%s')\n", name);
 	/* Put entries in cache */
