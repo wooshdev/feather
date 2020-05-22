@@ -68,7 +68,6 @@ main(void) {
 	size_t	i;
 	size_t	j;
 	size_t	longest;
-	size_t	temp;
 
 	strcpy(US_info.sysname, "undefined");
 	strcpy(US_info.nodename, "undefined");
@@ -92,6 +91,7 @@ main(void) {
 	/* Calculate the longest string for formatting */
 	longest = 0;
 	for (i = 0; i < amt; i++) {
+		size_t temp;
 		temp = strlen(modules[i].name);
 		if (longest < temp)
 			longest = temp;
