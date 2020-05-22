@@ -117,10 +117,18 @@ RSEntrypoint(void *threadParameter) {
 
 static void *
 RSChildEntrypoint(void *threadParameter) {
-	struct GSThread *thread = threadParameter;
+	char *path;
+	struct GSThread *thread;
 
-	RSChildHandler(thread->sockfd);
+	path = malloc(GSMaxPathSize);
+	if (!path)
+		return;
+
+	thread = threadParameter;
+
+	RSChildHandler(thread->sockfd, path);
 	close(thread->sockfd);
+	free(path);
 
 	GSChildThreadRelease(thread);
 

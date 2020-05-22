@@ -55,21 +55,16 @@ static bool
 VerifyValidPath(const char *, size_t, char *);
 
 void
-RSChildHandler(int sockfd) {
-	char *date;
-	char  evilCharacter;
-	char *path;
-	size_t pathLength;
-	ssize_t state;
+RSChildHandler(int sockfd, char *path) {
+	char	*date;
+	char	 evilCharacter;
+	size_t	 pathLength;
+	ssize_t	 state;
 
 	if (!IOTimeoutAvailableData(sockfd, 10000)) {
 		fputs(ANSI_COLOR_RED"[RSChildHandler] Timeout.\n", stderr);
 		return;
 	}
-
-	path = malloc(GSMaxPathSize);
-	if (!path)
-		return;
 
 	/* skip method + space */
 	do {
@@ -77,51 +72,36 @@ RSChildHandler(int sockfd) {
 
 		ret = read(sockfd, path, 1);
 
-		if (ret != 1) {
-			state = -1;
-			break;
-		}
+		if (ret != 1)
+			return;
 
-		if (!HTTPIsTokenCharacter(path[0])) {
-			if (path[0] == 0)
-				state = 0; /* method is empty */
-			else if (path[0] == ' ')
-				state = 1;
-			else
-				state = -2; /* invalid character */
-			break;
-		}
+		if (!HTTPIsTokenCharacter(path[0]))
+			if (path[0] == ' ')
+				break;
+			return; /* Invalid HTTP method encountered */
 	} while(1);
 
-	if (state < 0) {
-		/* I/O error */
-		free(path);
+	/* I/O error */
+	if (state < 0)
 		return;
-	}
 
-	if (!ReadPath(sockfd, path, &pathLength)) {
-		free(path);
+	if (!ReadPath(sockfd, path, &pathLength))
 		return;
-	}
 
 	if (!VerifyValidPath(path, pathLength, &evilCharacter)) {
 		fprintf(stderr, ANSI_COLOR_RED"[Redir] W: Client has sent an invalid "
 				"character in path: 0x%hhX"ANSI_COLOR_RESETLN,
 				(unsigned char) evilCharacter);
-		free(path);
 		return;
 	}
 
 	date = HTTPCreateDateCurrent();
-	if (!date) {
-		free(path);
+	if (!date)
 		return;
-	}
 
 	dprintf(sockfd, redirFormat, date, GSServerHostName, path,
 			GSServerProductName);
 
-	free(path);
 	free(date);
 }
 
@@ -131,7 +111,6 @@ ReadPath(int sockfd, char *buf, size_t *outLength) {
 
 	do {
 		ssize_t ret;
-
 		ret = read(sockfd, buf, 1);
 
 		if (ret != 1)
@@ -147,25 +126,21 @@ ReadPath(int sockfd, char *buf, size_t *outLength) {
 	} while (TRUE);
 }
 
-
-
 static bool
 VerifyValidPath(const char *path, size_t length, char *outChar) {
 	size_t i;
 
-	for (i = 0; i < length; i++) {
-		/**
-		 * Checking for every valid character as per RFC 3986 and 7230 is just
-		 * a waste of time IMO, so checking for non-display characters may be
-		 * the best choice atm.
-		 */
-
+	/**
+	 * Checking for every valid character as per RFC 3986 and 7230 is just
+	 * a waste of time IMO, so checking for non-display characters may be
+	 * the best choice atm.
+	 */
+	for (i = 0; i < length; i++)
 		if (path[i]  < 0x20 || /* ASCII Control Characters */
-			path[i] == 0x7F) { /* ACII DEL character */
+			path[i] == 0x7F) { /* ASCII DEL character */
 			*outChar = length;
 			return FALSE;
 		}
-	}
 
 	return TRUE;
 }

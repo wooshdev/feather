@@ -33,6 +33,6 @@
 #define REDIR_CLIENT_H
 
 void
-RSChildHandler(int);
+RSChildHandler(int, char *);
 
 #endif /* REDIR_CLIENT_H */
