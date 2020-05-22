@@ -47,5 +47,7 @@ H2SendSettings(struct H2Session *session, struct H2Setting *settings,
 
 bool
 H2HandleSettings(struct H2Session *session, struct H2Frame *frame) {
+	(void) session;
+	(void) frame;
 	return TRUE;
 }
