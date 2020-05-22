@@ -49,12 +49,17 @@ const char redirFormat[] = "HTTP/1.1 301 Moved Permanently\r\n"
 
 /* Prototypes */
 static bool
-ReadPath(int, char *);
+ReadPath(int, char *, size_t *);
+
+static bool
+VerifyValidPath(const char *, size_t, char *);
 
 void
 RSChildHandler(int sockfd) {
 	char *date;
+	char  evilCharacter;
 	char *path;
+	size_t pathLength;
 	ssize_t state;
 
 	if (!IOTimeoutAvailableData(sockfd, 10000)) {
@@ -94,7 +99,14 @@ RSChildHandler(int sockfd) {
 		return;
 	}
 
-	if (!ReadPath(sockfd, path)) {
+	if (!ReadPath(sockfd, path, &pathLength)) {
+		free(path);
+		return;
+	}
+
+	if (!VerifyValidPath(path, pathLength, &evilCharacter)) {
+		fprintf(stderr, ANSI_COLOR_RED"[Redir] W: Client has sent an invalid "
+				"character in path: 0x%hhX"ANSI_COLOR_RESETLN, evilCharacter);
 		free(path);
 		return;
 	}
@@ -113,7 +125,9 @@ RSChildHandler(int sockfd) {
 }
 
 static bool
-ReadPath(int sockfd, char *buf) {
+ReadPath(int sockfd, char *buf, size_t *outLength) {
+	*outLength = 0;
+
 	do {
 		ssize_t ret;
 
@@ -123,10 +137,34 @@ ReadPath(int sockfd, char *buf) {
 			return FALSE;
 
 		if (buf[0] == ' ') {
-			buf[0] = 0;
+			buf[0] = '\0';
 			return TRUE;
 		}
 
+		*outLength += 1;
 		buf += 1;
 	} while (TRUE);
+}
+
+
+
+static bool
+VerifyValidPath(const char *path, size_t length, char *outChar) {
+	size_t i;
+
+	for (i = 0; i < length; i++) {
+		/**
+		 * Checking for every valid character as per RFC 3986 and 7230 is just
+		 * a waste of time IMO, so checking for non-display characters may be
+		 * the best choice atm.
+		 */
+
+		if (path[i]  < 0x20 || /* ASCII Control Characters */
+			path[i] == 0x7F) { /* ACII DEL character */
+			*outChar = length;
+			return FALSE;
+		}
+	}
+
+	return TRUE;
 }
