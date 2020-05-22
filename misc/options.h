@@ -63,22 +63,6 @@
  * release:  5.4.0-28-generic
  * machine:  x86_64
  *
- * On Linux systems, more specific information about the distribution may be
- * welcome:
- * distname:        The name of the distribution
- * distversion:     The release/version of the distribution
- * distcodename:    The codename of the distribution
- * distdescription: The description of the distribution
- *
- * On Ubuntu 20.04, the above result in:
- * distname:        Ubuntu
- * distversion:     20.04
- * distcodename:    focal
- * distdescription: Ubuntu 20.04 focal
- *
- * On non-Linux systems, the dist* variables are ignore. The values will appear
- * in the order that they are listed here.
- *
  * For more information on the meaning of these bits, visit a standard such
  * as SUS or POSIX, e.g. at:
  * https://pubs.opengroup.org/onlinepubs/007908799/xsh/uname.html
@@ -88,11 +72,7 @@ enum OSILevel {
 	OSIL_SYSNAME = 1,
 	OSIL_NODENAME = 2,
 	OSIL_RELEASE = 4,
-	OSIL_MACHINE = 8,
-	OSIL_DISTNAME = 16,
-	OSIL_DISTVERSION = 32,
-	OSIL_DISTCODENAME = 64,
-	OSIL_DISTDESCRIPTION = 128
+	OSIL_MACHINE = 8
 };
 
 extern const char	*OMSCertificateFile;
