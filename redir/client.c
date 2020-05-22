@@ -59,7 +59,6 @@ RSChildHandler(int sockfd, char *path) {
 	char	*date;
 	char	 evilCharacter;
 	size_t	 pathLength;
-	ssize_t	 state;
 
 	if (!IOTimeoutAvailableData(sockfd, 10000)) {
 		fputs(ANSI_COLOR_RED"[RSChildHandler] Timeout.\n", stderr);
@@ -75,15 +74,12 @@ RSChildHandler(int sockfd, char *path) {
 		if (ret != 1)
 			return;
 
-		if (!HTTPIsTokenCharacter(path[0]))
+		if (!HTTPIsTokenCharacter(path[0])) {
 			if (path[0] == ' ')
 				break;
 			return; /* Invalid HTTP method encountered */
+		}
 	} while(1);
-
-	/* I/O error */
-	if (state < 0)
-		return;
 
 	if (!ReadPath(sockfd, path, &pathLength))
 		return;

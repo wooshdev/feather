@@ -34,6 +34,7 @@
 #include <sched.h>
 #include <stddef.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <sys/socket.h>
 #include <unistd.h>
 
@@ -122,7 +123,7 @@ RSChildEntrypoint(void *threadParameter) {
 
 	path = malloc(GSMaxPathSize);
 	if (!path)
-		return;
+		return NULL;
 
 	thread = threadParameter;
 

@@ -1,0 +1,8 @@
+dist: bionic
+language: c
+compiler:
+  - clang
+  - gcc
+script: make
+before_install:
+  - sudo apt-get -y install openssl libssl-dev libbrotli1 libbrotli-dev

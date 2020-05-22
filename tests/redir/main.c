@@ -125,6 +125,7 @@ bool PayloadTest(const void *inBuf, size_t inBufSize, void *outBuf,
 
 	const uint8_t *buf;
 	size_t len;
+	char *path;
 	char *result;
 	ssize_t ret;
 
@@ -152,8 +153,15 @@ bool PayloadTest(const void *inBuf, size_t inBufSize, void *outBuf,
 		len -= ret;
 	} while (len != 0);
 
+	path = malloc(256); /* Same as in base/global_state.c */
+	if (!path) {
+		close(fd[0]);
+		close(fd[1]);
+		return 0;
+	}
+
 	/* Execute */
-	RSChildHandler(fd[1]);
+	RSChildHandler(fd[1], path);
 
 	/* Check result */
 	/* Example: "HTTP/1.1 301 Moved Permanently" */
