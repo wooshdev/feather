@@ -145,12 +145,7 @@ CSHandleHTTP1(CSSClient client) {
 		return;
 
 	do {
-		clock_t after;
-		clock_t before;
-
-		before = clock();
 		status = handleRequest(client, request);
-		after = clock();
 	} while (status);
 
 	free(request);
