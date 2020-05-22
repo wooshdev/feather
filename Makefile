@@ -28,6 +28,7 @@ BINARIES = \
 	bin/http/strings.so \
 	bin/http/syntax.so \
 	bin/http2/frames/settings.so \
+	bin/http2/debugging.so \
 	bin/http2/frame.so \
 	bin/misc/io.so \
 	bin/misc/options.so \
@@ -108,6 +109,10 @@ bin/http2/frames/settings.so: http2/frames/settings.c \
 	core/security.h \
 	misc/default.h
 	$(CC) $(CFLAGS) -c -o $@ http2/frames/settings.c
+
+bin/http2/debugging.so: http2/debugging.c \
+	http2/debugging.h
+	$(CC) $(CFLAGS) -c -o $@ http2/debugging.c
 
 bin/http2/frame.so: http2/frame.c \
 	http2/frame.h \

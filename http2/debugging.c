@@ -27,9 +27,22 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef HTTP2_DEBUGGING_H
-#define HTTP2_DEBUGGING_H
+#include "debugging.h"
 
-extern const char *H2DFrameTypeNames[];
+#include <stdlib.h>
 
-#endif /* HTTP2_DEBUGGING_H */
+const char *H2DFrameTypeNames[] = {
+	"DATA",
+	"HEADERS",
+	"PRIORITY",
+	"RST_STREAM",
+	"SETTINGS",
+	"PUSH_PROMISE",
+	"PING",
+	"GOAWAY",
+	"WINDOW_UPDATE",
+	"CONTINUATION",
+	"ALTSVC",
+	NULL,
+	"ORIGIN"
+}; 
