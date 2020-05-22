@@ -106,7 +106,8 @@ RSChildHandler(int sockfd) {
 
 	if (!VerifyValidPath(path, pathLength, &evilCharacter)) {
 		fprintf(stderr, ANSI_COLOR_RED"[Redir] W: Client has sent an invalid "
-				"character in path: 0x%hhX"ANSI_COLOR_RESETLN, evilCharacter);
+				"character in path: 0x%hhX"ANSI_COLOR_RESETLN,
+				(unsigned char) vilCharacter);
 		free(path);
 		return;
 	}

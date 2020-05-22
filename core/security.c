@@ -205,7 +205,7 @@ CSSSetupClient(int sockfd, CSSClient *client) {
 	int ret;
 	SSL *ssl;
 
-	if (IOTimeoutAvailableData(sockfd, CSS_POLL_TIMEOUT) <= 0)
+	if (!IOTimeoutAvailableData(sockfd, CSS_POLL_TIMEOUT))
 		return 0;
 
 	ssl = SSL_new(SSLContext);

@@ -68,7 +68,6 @@ main(void) {
 	size_t	i;
 	size_t	j;
 	size_t	longest;
-	bool	ret;
 	size_t	temp;
 
 	strcpy(US_info.sysname, "undefined");
@@ -102,6 +101,8 @@ main(void) {
 	printf("Running "ANSI_COLOR_BLUE"%zu"ANSI_COLOR_RESET" tests.\n", amt);
 
 	for (i = 0; i < amt; i++) {
+		bool ret;
+
 		printf(ANSI_COLOR_MAGENTA"%s"ANSI_COLOR_RESET" running",
 			   modules[i].name);
 		fflush(stdout);
