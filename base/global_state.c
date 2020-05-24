@@ -301,7 +301,9 @@ GSPopulateProductName(void) {
 	char	*str;
 	size_t	 len;
 	size_t	 sizeLeft;
-	int		 warn; /* bool */
+	#ifndef GS_NO_POPULATE_PRODUCTNAME_WARNINGS
+	bool	 warn;
+	#endif
 
 	struct utsname systemName;
 
@@ -310,7 +312,9 @@ GSPopulateProductName(void) {
 	str = internalProductName + 5;
 
 	sizeLeft = sizeof(internalProductName) / sizeof(internalProductName[0]) - 5;
-	warn = 0;
+	#ifndef GS_NO_POPULATE_PRODUCTNAME_WARNINGS
+	warn = false;
+	#endif
 
 	if (FUNC_UNAME(&systemName) == -1) {
 		perror("uname");
@@ -348,7 +352,9 @@ GSPopulateProductName(void) {
 	}
 
 	if (OMGSSystemInformationInServerHeader & OSIL_RELEASE) {
-		warn = 1;
+		#ifndef GS_NO_POPULATE_PRODUCTNAME_WARNINGS
+		warn = true;
+		#endif
 		len = strlen(systemName.release);
 		if (len + 1 > sizeLeft - 1) {
 			fprintf(stderr, ANSI_COLOR_RED"[GSInit] [GSPopulateProductName] E:"
@@ -363,7 +369,9 @@ GSPopulateProductName(void) {
 	}
 
 	if (OMGSSystemInformationInServerHeader & OSIL_MACHINE) {
-		warn = 1;
+		#ifndef GS_NO_POPULATE_PRODUCTNAME_WARNINGS
+		warn = true;
+		#endif
 		len = strlen(systemName.machine);
 		if (len + 1 > sizeLeft - 1) {
 			fprintf(stderr, ANSI_COLOR_RED"[GSInit] [GSPopulateProductName] E: "
