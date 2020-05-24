@@ -36,7 +36,6 @@
 #endif
 
 #include <stdbool.h>
-#include <stdint.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -47,9 +46,6 @@
 #include "http2/frame.h"
 #include "http2/session.h"
 #include "misc/default.h"
-
-/* Instead of http2/settings.h */
-struct H2Setting;
 
 const char HTTP2Preface[] = "PRI * HTTP/2.0\r\n\r\nSM\r\n\r\n";
 
