@@ -293,8 +293,8 @@ alpnHandler(SSL *ssl, const unsigned char **out, unsigned char *outlen,
 	UNUSED(arg);
 
 	size_t pos = 0;
-	unsigned char size;
-	int wasHTTP1Found = 0;
+	unsigned char size = 0;
+	bool wasHTTP1Found = false;
 
 	while (pos < inlen) {
 		size = in[pos++];
@@ -305,7 +305,7 @@ alpnHandler(SSL *ssl, const unsigned char **out, unsigned char *outlen,
 
 		if (size == ALPN_HTTP1_LEN &&
 			compareALPN(ALPN_HTTP1, in + pos, size)) {
-			wasHTTP1Found = 1;
+			wasHTTP1Found = true;
 		}
 #ifdef OPTIONS_ENABLE_HTTP2
 		else if (size == ALPN_HTTP2_LEN &&
