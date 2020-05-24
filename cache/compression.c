@@ -170,6 +170,11 @@ trySave(const char *fileName, struct FCVersion *version, const char *ext) {
 	memcpy(buf + cacheLocationSize, ext, extSize);
 	memcpy(buf + cacheLocationSize + extSize, fileName, fileNameSize + 1);
 	changeCharacter = strrchr(buf, '/');
+
+	if (changeCharacter == NULL) {
+		fputs("Error: Invalid OMCacheLocation.", stderr);
+		return false;
+	}
 	changeCharacter[0] = '\0';
 
 	/* Create directories */
