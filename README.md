@@ -23,12 +23,11 @@ In the future, the following features can be expected:
 ## Platform Support <a name="platform-support"></a>
 This code is designed to primarily use POSIX and C89 functions, but some minimal C99-standard functions and some libraries 
 are used. This basically means that most UNIX-like systems are supported. Currently, the following platforms are supported:
-- (GNU) Linux
+- Linux
 - FreeBSD
 - OpenBSD
 
-Please refer to the build instructions for more details. Windows systems are not supported and will probably also not be
-supported in the future.
+Please refer to the build instructions for more details. Windows systems are not supported and will probably never be supported.
 
 ## Dependencies
 This project tries to keep the amount of dependencies used minimal, but some are simply mandatory.
