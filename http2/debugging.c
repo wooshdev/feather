@@ -45,4 +45,4 @@ const char *H2DFrameTypeNames[] = {
 	"ALTSVC",
 	NULL,
 	"ORIGIN"
-}; 
+};

@@ -113,4 +113,4 @@ H2SendFrame(struct H2Session *session, struct H2Frame *frame) {
 		return false;
 
 	return true;
-} 
+}

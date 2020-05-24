@@ -92,14 +92,14 @@ void CSHandleHTTP2(CSSClient client) {
 		if (!H2ReadFrame(session, &session->frameBuffer))
 			break;
 
-		if (session->frameBuffer.type 
+		if (session->frameBuffer.type
 				< sizeof(frameHandlers) / sizeof(frameHandlers[0])
 			&& frameHandlers[session->frameBuffer.type] != NULL) {
-			ret = frameHandlers[session->frameBuffer.type](session, 
+			ret = frameHandlers[session->frameBuffer.type](session,
 													 &session->frameBuffer);
 
 			if (!ret) {
-				
+				/* TODO */
 			}
 		} else
 			printf(ANSI_COLOR_YELLOW"W: Ignored Frame %s"ANSI_COLOR_RESETLN,

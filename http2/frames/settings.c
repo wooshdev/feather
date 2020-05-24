@@ -35,7 +35,7 @@
 struct H2Setting;
 
 bool
-H2SendSettings(struct H2Session *session, struct H2Setting *settings, 
+H2SendSettings(struct H2Session *session, struct H2Setting *settings,
 			   size_t count) {
 	session->frameBuffer.length = count * 6;
 	session->frameBuffer.type = H2_FRAME_SETTINGS;
