@@ -78,6 +78,7 @@ char *
 HTTPCreateDate(time_t inputTime) {
 	size_t len;
 	char *buf;
+	char *buf2;
 
 	buf = calloc(DATE_HEADER_BUFFER_SIZE, sizeof(char));
 	if (buf == NULL)
@@ -86,7 +87,11 @@ HTTPCreateDate(time_t inputTime) {
 	len = strftime(buf, DATE_HEADER_BUFFER_SIZE, "%a, %d %h %Y %T %z",
 				   localtime(&inputTime));
 
-	return realloc(buf, len + 1);
+	buf2 = realloc(buf, len + 1);
+
+	/* If realloc fails, use the original (this will likely never, ever happen
+	 * anyway) */
+	return buf2 ? buf2 : buf;
 }
 
 char *
