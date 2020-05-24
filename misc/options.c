@@ -34,6 +34,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "misc/default.h"
+
 /* Secure/recommended value by default: none */
 enum OSILevel OMGSSystemInformationInServerHeader = OSIL_NONE;
 
@@ -123,10 +125,10 @@ OMSetup(void) {
 
 	if (internalSetupCertificatesLetsencrypt() <= 0) {
 		puts("Failed to setup certificate files using Letsencrypt.");
-		return FALSE;
+		return false;
 	}
 
-	return TRUE;
+	return true;
 }
 
 void

@@ -32,6 +32,7 @@
 #ifndef REDIR_SERVER_H
 #define REDIR_SERVER_H
 
-void *RSEntrypoint(void *);
+void *
+RSEntrypoint(void *);
 
 #endif /* REDIR_SERVER_H */

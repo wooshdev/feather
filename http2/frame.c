@@ -51,7 +51,7 @@ H2ReadFrame(struct H2Session *session, struct H2Frame *frame) {
 
 	/* Length */
 	if (!CSSReadClient(session->client, (char *)buf, 3))
-		return FALSE;
+		return false;
 
 #if __BYTE_ORDER == __LITTLE_ENDIAN
 	frame->length = (buf[0] << 16) + (buf[1] << 8) + buf[2];
@@ -59,15 +59,15 @@ H2ReadFrame(struct H2Session *session, struct H2Frame *frame) {
 
 	/* Type */
 	if (!CSSReadClient(session->client, (char *) &frame->type, 1))
-		return FALSE;
+		return false;
 
 	/* Flags */
 	if (!CSSReadClient(session->client, (char *) &frame->flags, 1))
-		return FALSE;
+		return false;
 
 	/* R + Stream Identifier */
 	if (!CSSReadClient(session->client, (char *) buf, 4))
-		return FALSE;
+		return false;
 	frame->stream = ntohs((uint32_t) *buf);
 
 // 	puts("Frame information");
@@ -79,15 +79,15 @@ H2ReadFrame(struct H2Session *session, struct H2Frame *frame) {
 	/* Payload */
 	frame->payload = malloc(frame->length);
 	if (frame->payload == NULL)
-		return FALSE;
+		return false;
 
 	if (!CSSReadClient(session->client, (char *)frame->payload,
 			frame->length)) {
 		free(frame->payload);
-		return FALSE;
+		return false;
 	}
 
-	return TRUE;
+	return true;
 }
 
 bool
@@ -105,12 +105,12 @@ H2SendFrame(struct H2Session *session, struct H2Frame *frame) {
 	};
 
 	if (!CSSWriteClient(session->client, buf, sizeof(buf)))
-		return FALSE;
+		return false;
 
 	if (frame->length != 0 &&
 		frame->payload != NULL &&
 		!CSSWriteClient(session->client, frame->payload, frame->length))
-		return FALSE;
+		return false;
 
-	return TRUE;
+	return true;
 } 

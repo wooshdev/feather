@@ -37,6 +37,7 @@
 #include <fcntl.h>
 #include <netdb.h>
 #include <signal.h>
+#include <stdbool.h>
 #include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -48,8 +49,6 @@
 #include "misc/io.h"
 #include "misc/options.h"
 #include "misc/statistics.h"
-
-#define LINUX_DIST_FILE "/etc/lsb-release"
 
 /* Use function macros for testing */
 #ifndef FUNC_UNAME
@@ -179,13 +178,13 @@ GSInit(void) {
 	if (!GSPopulateProductName()) {
 		perror(ANSI_COLOR_RED"[GSInit] Failed to populate the 'Server' header"
 			   ANSI_COLOR_RESETLN);
-		return FALSE;
+		return false;
 	}
 
 	GSChildThreads = calloc(GSChildSize, sizeof(struct GSThread));
 	if (GSChildThreads == NULL) {
 		perror(ANSI_COLOR_RED"[GSInit] Failed to allocate"ANSI_COLOR_RESETLN);
-		return FALSE;
+		return false;
 	}
 
 	for (i = 0; i < GSChildSize; i++)
@@ -196,7 +195,7 @@ GSInit(void) {
 	if (GSCoreSocket < 0) {
 		printf(ANSI_COLOR_RED"[GSInit] Failed to create GSCoreSocket: %s"
 			ANSI_COLOR_RESETLN, IOErrors[-GSCoreSocket]);
-		return FALSE;
+		return false;
 	}
 
 	GSRedirSocket = IOCreateSocket(80, 1);
@@ -204,10 +203,10 @@ GSInit(void) {
 	if (GSRedirSocket < 0) {
 		printf(ANSI_COLOR_RED"[GSInit] Failed to create GSRedirSocket: %s"
 			ANSI_COLOR_RESETLN, IOErrors[-GSRedirSocket]);
-		return FALSE;
+		return false;
 	}
 
-	return TRUE;
+	return true;
 }
 
 void
@@ -243,7 +242,7 @@ GSScheduleChildThread(enum GSThreadParent parent,
 		if (thread->state) {
 			fputs(ANSI_COLOR_RED"[GSScheduleChildThread] All threads are in"
 				" use at the moment."ANSI_COLOR_RESETLN, stderr);
-			return FALSE;
+			return false;
 		}
 
 		thread->sockfd = sockfd;
@@ -272,12 +271,12 @@ GSScheduleChildThread(enum GSThreadParent parent,
 		}
 		pthread_mutex_unlock(&GSChildMutex);
 
-		return FALSE;
+		return false;
 	}
 
 	pthread_detach(thread->thread);
 
-	return TRUE;
+	return true;
 }
 
 
@@ -300,7 +299,7 @@ GSPopulateProductName(void) {
 	memcpy(internalProductName, "WFS", 4);
 
 	if (OMGSSystemInformationInServerHeader == OSIL_NONE)
-		return TRUE;
+		return true;
 
 	char	*str;
 	size_t	 len;
@@ -320,7 +319,7 @@ GSPopulateProductName(void) {
 		perror("uname");
 		fputs(ANSI_COLOR_RED"[GSInit] [GSPopulateProductName] Failed to "
 			  "retrieve system information."ANSI_COLOR_RESETLN, stdout);
-		return FALSE;
+		return false;
 	}
 
 	if (OMGSSystemInformationInServerHeader & OSIL_SYSNAME) {
@@ -329,7 +328,7 @@ GSPopulateProductName(void) {
 			fprintf(stderr, ANSI_COLOR_RED"[GSInit] [GSPopulateProductName] E:"
 				   " The variable 'sysname' doesn't fit! value='%s' (%zu"
 					" characters)"ANSI_COLOR_RESETLN, systemName.sysname, len);
-			return FALSE;
+			return false;
 		}
 
 		memcpy(str, systemName.sysname, len);
@@ -343,7 +342,7 @@ GSPopulateProductName(void) {
 			fprintf(stderr, ANSI_COLOR_RED"[GSInit] [GSPopulateProductName] E:"
 				   " The variable 'nodename' doesn't fit! value='%s' (%zu"
 					" characters)"ANSI_COLOR_RESETLN, systemName.nodename, len);
-			return FALSE;
+			return false;
 		}
 
 		memcpy(str, systemName.nodename, len);
@@ -358,7 +357,7 @@ GSPopulateProductName(void) {
 			fprintf(stderr, ANSI_COLOR_RED"[GSInit] [GSPopulateProductName] E:"
 				   " The variable 'release' doesn't fit! value='%s' (%zu"
 					" characters)"ANSI_COLOR_RESETLN, systemName.release, len);
-			return FALSE;
+			return false;
 		}
 
 		memcpy(str, systemName.release, len);
@@ -373,7 +372,7 @@ GSPopulateProductName(void) {
 			fprintf(stderr, ANSI_COLOR_RED"[GSInit] [GSPopulateProductName] E: "
 				   "'machine' is too big! machine='%s' (%zu characters)"
 					ANSI_COLOR_RESETLN, systemName.machine, len);
-			return FALSE;
+			return false;
 		}
 
 		memcpy(str, systemName.machine, len);
@@ -407,5 +406,5 @@ GSPopulateProductName(void) {
 	printf("GSPopulateProductName: '%s'\n", GSServerProductName);
 #endif
 
-	return TRUE;
+	return true;
 }

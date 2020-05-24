@@ -30,6 +30,8 @@
 #ifndef CACHE_COMPRESSION_H
 #define CACHE_COMPRESSION_H
 
+#include <stdbool.h>
+
 #include "misc/default.h"
 
 struct FCEntry;

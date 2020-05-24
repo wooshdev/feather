@@ -35,7 +35,7 @@
 #include <pthread.h>
 #include <stddef.h>
 
-#include "misc/default.h"
+#include <stdbool.h>
 
 struct GSThread {
 	int			 state;

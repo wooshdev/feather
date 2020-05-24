@@ -30,10 +30,9 @@
 #ifndef BASE_IO_H
 #define BASE_IO_H
 
+#include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
-
-#include "misc/default.h"
 
 extern const char *IOErrors[];
 

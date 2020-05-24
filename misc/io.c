@@ -41,6 +41,8 @@
 #include <string.h>
 #include <unistd.h>
 
+#include "misc/default.h"
+
 const char *IOErrors[] = {
 	/*  0 */"no error",
 	/*  1 */"failed to open socket",

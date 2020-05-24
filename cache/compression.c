@@ -64,7 +64,7 @@ compressBrotli(const char *, struct FCEntry *);
 
 bool
 FCCompressionSetup(void) {
-	return TRUE;
+	return true;
 }
 
 void
@@ -74,9 +74,9 @@ FCCompressionDestroy(void) {
 bool
 FCCompressFile(const char *fileName, struct FCEntry *entry) {
 	if (!compressBrotli(fileName, entry))
-		return FALSE;
+		return false;
 
-	return TRUE;
+	return true;
 }
 
 bool
@@ -88,11 +88,11 @@ compressBrotli(const char *fileName, struct FCEntry *entry) {
 	entry->br.encoding = MTE_brotli;
 
 	if (entry->uncompressed.size == 0)
-		return TRUE;
+		return true;
 
 	if (tryLoad(fileName, &entry->br, entry->br.encoding,
 		entry->modificationDate)) {
-		return TRUE;
+		return true;
 	}
 
 	initialSize = BrotliEncoderMaxCompressedSize(entry->uncompressed.size);
@@ -101,7 +101,7 @@ compressBrotli(const char *fileName, struct FCEntry *entry) {
 		fprintf(stderr, ANSI_COLOR_RED"[Cache::compressBrotli] Size "
 				"doesn't fit size_t! Input size is %zu"ANSI_COLOR_RESETLN,
 				entry->uncompressed.size);
-		return FALSE;
+		return false;
 	}
 
 	entry->br.data = malloc(entry->br.size);
@@ -109,7 +109,7 @@ compressBrotli(const char *fileName, struct FCEntry *entry) {
 		entry->br.size = 0;
 		fputs(ANSI_COLOR_RED"[Cache::compressBrotli] Allocation error."
 				ANSI_COLOR_RESETLN, stderr);
-		return FALSE;
+		return false;
 	}
 
 	ret = BrotliEncoderCompress(BrotliQuality, BrotliWindow, BrotliMode,
@@ -123,7 +123,7 @@ compressBrotli(const char *fileName, struct FCEntry *entry) {
 		free(entry->br.data);
 		entry->br.size = 0;
 		entry->br.data = NULL;
-		return FALSE;
+		return false;
 	}
 
 	if (initialSize != entry->br.size) {
@@ -134,7 +134,7 @@ compressBrotli(const char *fileName, struct FCEntry *entry) {
 			entry->br.size = 0;
 			fputs(ANSI_COLOR_RED"[Cache::compressBrotli] Reallocation error."
 				  ANSI_COLOR_RESETLN, stderr);
-			return FALSE;
+			return false;
 		}
 
 		entry->br.data = newData;
@@ -146,7 +146,7 @@ compressBrotli(const char *fileName, struct FCEntry *entry) {
 				ANSI_COLOR_RESETLN, fileName);
 	}
 
-	return TRUE;
+	return true;
 }
 
 bool
@@ -175,7 +175,7 @@ trySave(const char *fileName, struct FCVersion *version, const char *ext) {
 	if (IOMkdirRecursive(buf) != 0) {
 		fprintf(stderr, ANSI_COLOR_RED"[Cache::trySave] Failed to mkdir %s"
 				ANSI_COLOR_RESETLN, buf);
-		return FALSE;
+		return false;
 	}
 
 	/* Construct the name */
@@ -186,7 +186,7 @@ trySave(const char *fileName, struct FCVersion *version, const char *ext) {
 	if (fd == -1) {
 		perror(ANSI_COLOR_RED"[Cache::trySave] Failed to create the file");
 		fputs(ANSI_COLOR_RESET, stdout);
-		return FALSE;
+		return false;
 	}
 
 	writeBuf = version->data;
@@ -199,7 +199,7 @@ trySave(const char *fileName, struct FCVersion *version, const char *ext) {
 			close(fd);
 			fprintf(stderr, ANSI_COLOR_RED"[Cache::trySave] Failed to save %s"
 					ANSI_COLOR_RESETLN, buf);
-			return FALSE;
+			return false;
 		}
 
 		len -= ret;
@@ -207,7 +207,7 @@ trySave(const char *fileName, struct FCVersion *version, const char *ext) {
 	} while (len != 0);
 
 	close(fd);
-	return TRUE;
+	return true;
 }
 
 /* Try load the compressed file from the filesystem cache. */
@@ -235,21 +235,21 @@ tryLoad(const char *fileName, struct FCVersion *version, const char *ext,
 	if (fd == -1) {
 		perror("Failed to open file");
 		printf("FileName is '%s'\n", buf);
-		return FALSE;
+		return false;
 	}
 
 	if (fstat(fd, &status) == -1) {
 		perror(ANSI_COLOR_RED"[Cache::Compression::tryLoad] fstat() failure");
 		fprintf(stderr, "\tFile='%s'"ANSI_COLOR_RESETLN, buf);
 		close(fd);
-		return FALSE;
+		return false;
 	}
 
 	if (status.st_mtime < modificationDate) {
 		puts(ANSI_COLOR_RED"File was out of date:");
 		fprintf(stderr, "\tFile='%s'"ANSI_COLOR_RESETLN, buf);
 		close(fd);
-		return FALSE;
+		return false;
 	}
 
 	version->size = status.st_size;
@@ -259,7 +259,7 @@ tryLoad(const char *fileName, struct FCVersion *version, const char *ext,
 				" allocate %lli octets for file '%s' on extension '%s'"
 				ANSI_COLOR_RESETLN, (long long int) status.st_size, buf, ext);
 		close(fd);
-		return FALSE;
+		return false;
 	}
 
 	len = version->size;
@@ -278,7 +278,7 @@ tryLoad(const char *fileName, struct FCVersion *version, const char *ext,
 			perror(ANSI_COLOR_RED"[Cache::Compression::tryLoad] Failed read");
 			fprintf(stderr, "\tFile='%s'"ANSI_COLOR_RESETLN, buf);
 			close(fd);
-			return FALSE;
+			return false;
 		}
 
 		len -= ret;
@@ -286,5 +286,5 @@ tryLoad(const char *fileName, struct FCVersion *version, const char *ext,
 	} while (len != 0);
 
 	close(fd);
-	return TRUE;
+	return true;
 }

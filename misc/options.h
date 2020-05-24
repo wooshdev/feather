@@ -33,7 +33,7 @@
 #ifndef MISC_OPTIONS_H
 #define MISC_OPTIONS_H
 
-#include "misc/default.h"
+#include <stdbool.h>
 
 /**
  * The system information level. You can choose to include information about

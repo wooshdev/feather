@@ -31,6 +31,7 @@
 
 #include <sys/time.h>
 
+#include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -440,7 +441,7 @@ recoverError(CSSClient client, enum HTTPError error,
 	 * try to prepare and send a special error message. */
 	if (error == HTTP_ERROR_READ) {
 		free(request->headers);
-		return FALSE;
+		return false;
 	}
 
 	/* We're done with request handling and after this we're just preparing the
@@ -481,7 +482,7 @@ recoverError(CSSClient client, enum HTTPError error,
 
 	if (!buf) {
 		perror("Allocation failure");
-		return FALSE;
+		return false;
 	}
 
 	formattedBufSize = sprintf(buf, messageFormat,
@@ -498,21 +499,21 @@ recoverError(CSSClient client, enum HTTPError error,
 	free(buf);
 
 	if (!ret)
-		return FALSE;
+		return false;
 
 	ret = CSSWriteClient(client, document,
 						 sizeof(document) / sizeof(document[0]) - 1);
 
 	if (!ret)
-		return FALSE;
+		return false;
 
 	switch (error) {
 		/* Errors that don't affect the connection should return 1, and errors
 		 * that do should return 0. */
 		case HTTP_ERROR_FILE_NOT_FOUND:
-			return TRUE;
+			return true;
 		default:
-			return FALSE;
+			return false;
 	}
 }
 
@@ -594,7 +595,7 @@ handleRequestStage2(CSSClient client, struct HTTPRequest *request,
 					 strlen(GSServerProductName) + 1);
 		if (!buf) {
 			perror("Allocation failure");
-			return FALSE;
+			return false;
 		}
 
 		formattedBufSize = sprintf(buf, messageNotModified, date,
@@ -603,7 +604,7 @@ handleRequestStage2(CSSClient client, struct HTTPRequest *request,
 		free(buf);
 
 		/* is the following ?: really necessary? */
-		return ret ? TRUE : FALSE;
+		return ret ? true : false;
 	}
 
 	/* Follow-up for the dateLastModified header */
@@ -627,7 +628,7 @@ handleRequestStage2(CSSClient client, struct HTTPRequest *request,
 
 	if (!buf) {
 		perror("Allocation failure");
-		return FALSE;
+		return false;
 	}
 
 	formattedBufSize = sprintf(buf, messageFormat,
@@ -644,9 +645,9 @@ handleRequestStage2(CSSClient client, struct HTTPRequest *request,
 	free(buf);
 
 	if (!ret)
-		return FALSE;
+		return false;
 
 	ret = CSSWriteClient(client, result.data, result.size);
 
-	return ret ? TRUE : FALSE;
+	return ret ? true : false;
 }

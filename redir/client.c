@@ -29,6 +29,7 @@
 
 #include "client.h"
 
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -110,16 +111,16 @@ ReadPath(int sockfd, char *buf, size_t *outLength) {
 		ret = read(sockfd, buf, 1);
 
 		if (ret != 1)
-			return FALSE;
+			return false;
 
 		if (buf[0] == ' ') {
 			buf[0] = '\0';
-			return TRUE;
+			return true;
 		}
 
 		*outLength += 1;
 		buf += 1;
-	} while (TRUE);
+	} while (true);
 }
 
 static bool
@@ -135,8 +136,8 @@ VerifyValidPath(const char *path, size_t length, char *outChar) {
 		if (path[i]  < 0x20 || /* ASCII Control Characters */
 			path[i] == 0x7F) { /* ASCII DEL character */
 			*outChar = length;
-			return FALSE;
+			return false;
 		}
 
-	return TRUE;
+	return true;
 }

@@ -91,7 +91,7 @@ void CSHandleHTTP2(CSSClient client) {
 		return;
 	}
 
-	while (TRUE) {
+	while (true) {
 		if (!H2ReadFrame(session, &session->frameBuffer))
 			break;
 

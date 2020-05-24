@@ -30,12 +30,12 @@
 #ifndef HTTP2_FRAMES_SETTINGS_H
 #define HTTP2_FRAMES_SETTINGS_H
 
+#include <stdbool.h>
 #include <stddef.h>
 
 #include "core/security.h"
 #include "http2/session.h"
 #include "http2/settings.h"
-#include "misc/default.h"
 
 bool
 H2HandleSettings(struct H2Session *, struct H2Frame *);

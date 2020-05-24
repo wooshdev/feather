@@ -35,7 +35,6 @@
 #include <stddef.h>
 #include <stdio.h>
 
-
 #include <openssl/bio.h>
 #include <openssl/conf.h>
 #include <openssl/crypto.h>
@@ -249,14 +248,14 @@ CSSWriteClient(CSSClient client, const char *buf, size_t len) {
 					   ERR_func_error_string(error));
 			}
 #endif /* CORE_SECURITY_FLAG_FIX_WRITE_ERRORS */
-			return FALSE;
+			return false;
 		}
 
 		buf += ret;
 		len -= ret;
 	} while (len > 0);
 
-	return TRUE;
+	return true;
 }
 
 bool
@@ -267,13 +266,13 @@ CSSReadClient(CSSClient client, char *buf, size_t len) {
 		ret = SSL_read(client, buf, len);
 
 		if (ret <= 0)
-			return FALSE;
+			return false;
 
 		buf += ret;
 		len -= ret;
 	} while (len > 0);
 
-	return TRUE;
+	return true;
 }
 
 static int

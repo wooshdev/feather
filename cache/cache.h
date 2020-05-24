@@ -32,9 +32,8 @@
 #ifndef CACHE_CACHE_H
 #define CACHE_CACHE_H
 
+#include <stdbool.h>
 #include <time.h>
-
-#include "misc/default.h"
 
 struct FCVersion {
 	char		*data;

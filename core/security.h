@@ -32,11 +32,10 @@
 #ifndef CORE_SECURITY_H
 #define CORE_SECURITY_H
 
+#include <stdbool.h>
 #include <stddef.h>
 
 #include <openssl/ossl_typ.h>
-
-#include "misc/default.h"
 
 typedef SSL *CSSClient;
 

@@ -43,10 +43,10 @@
 #define H2_FRAME_ALTSVC 0xA
 #define H2_FRAME_ORIGIN 0xC
 
+#include <stdbool.h>
 #include <stdint.h>
 
 #include "core/security.h"
-#include "misc/default.h"
 
 /* RFC 7540 § 4.1 */
 struct H2Frame {
