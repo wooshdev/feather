@@ -128,6 +128,12 @@ Explanation: The two `clean` and `all` targets will insure the complete codebase
 $ clang-tidy <compilation unit> -- -I .
 ```
 Where `<compilation unit>` is a .c file, for example `main.c`.
+### Infer
+[Infer](https://github.com/facebook/infer) is an analysis tool created by Facebook. It finds errors previously not found by other static analysis tools. Click [here](https://fbinfer.com/docs/getting-started) for install instructions. To run Infer on this project, execute the following command:
+```bash
+$ infer run -- make clean all
+```
+This program will ensure Infer uses a clean build of the repository.
 ### Unit Tests
 Standalone components should be tested using `Unit Tests`. These are tests that will use a certain component of the program and feed it various types of input and checks the result. The tests are located in the `tests` folder.
 ### Script Tests
