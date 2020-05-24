@@ -1,5 +1,6 @@
 # FeatherServer
 ![Travis CI Badge](https://travis-ci.com/wooshdev/feather.svg?branch=master)
+![GitHub CI](https://github.com/wooshdev/feather/workflows/C/C++%20CI/badge.svg)
 
 ## Description
 FeatherServer is an open-source webserver that focuses on security and performance. Therefore, a very minimal configuration is used to reduce overhead.
