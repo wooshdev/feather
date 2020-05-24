@@ -82,20 +82,28 @@ internalSetupCertificatesLetsencrypt() {
 		a = strlen(internalPrefixPath);
 		b = strlen(dir->d_name);
 		genericSize = a + b + 1;
+
 		internalCert = malloc(genericSize + strlen(internalSuffixCert));
-		if (!internalCert)
+		if (!internalCert) {
+			closedir(dir);
 			return -1;
+		}
+
 		internalChain = malloc(genericSize + strlen(internalSuffixChain));
 		if (!internalChain) {
+			closedir(dir);
 			free(internalCert);
 			return -2;
 		}
+
 		internalPrivKey = malloc(genericSize + strlen(internalSuffixPrivKey));
 		if (!internalPrivKey) {
+			closedir(dir);
 			free(internalChain);
 			free(internalCert);
 			return -2;
 		}
+
 		strcpy(internalCert, internalPrefixPath);
 		strcpy(internalChain, internalPrefixPath);
 		strcpy(internalPrivKey, internalPrefixPath);
@@ -109,7 +117,9 @@ internalSetupCertificatesLetsencrypt() {
 		OMSCertificateFile = internalCert;
 		OMSCertificateChainFile = internalChain;
 		OMSCertificatePrivateKeyFile = internalPrivKey;
+
 		closedir(d);
+
 		return 1;
 	}
 
