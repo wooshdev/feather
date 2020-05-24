@@ -13,5 +13,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+    - name: Install Dependencies
+      run: sudo apt -y install openssl libssl-dev libbrotli1 libbrotli-dev
     - name: make
       run: make
