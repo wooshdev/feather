@@ -85,20 +85,20 @@ internalSetupCertificatesLetsencrypt() {
 
 		internalCert = malloc(genericSize + strlen(internalSuffixCert));
 		if (!internalCert) {
-			closedir(dir);
+			closedir(d);
 			return -1;
 		}
 
 		internalChain = malloc(genericSize + strlen(internalSuffixChain));
 		if (!internalChain) {
-			closedir(dir);
+			closedir(d);
 			free(internalCert);
 			return -2;
 		}
 
 		internalPrivKey = malloc(genericSize + strlen(internalSuffixPrivKey));
 		if (!internalPrivKey) {
-			closedir(dir);
+			closedir(d);
 			free(internalChain);
 			free(internalCert);
 			return -2;
