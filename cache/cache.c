@@ -125,8 +125,6 @@ addFile(const char *directory, const char *fileName) {
 				  ANSI_COLOR_RESETLN, stderr);
 			free(entry);
 			free(name);
-			fcEntries = NULL;
-			fcNames = NULL;
 			return false;
 		}
 		fcEntries = newEntries;
@@ -138,8 +136,6 @@ addFile(const char *directory, const char *fileName) {
 				  ANSI_COLOR_RESETLN, stderr);
 			free(entry);
 			free(name);
-			fcEntries = NULL;
-			fcNames = NULL;
 			return false;
 		}
 		fcNames = newNames;
