@@ -123,8 +123,6 @@ addFile(const char *directory, const char *fileName) {
 			fputs(ANSI_COLOR_RED
 				  "[Cache::addFile::newEntriesRealloc] Allocation failure."
 				  ANSI_COLOR_RESETLN, stderr);
-			free(fcEntries);
-			free(fcNames);
 			free(entry);
 			free(name);
 			fcEntries = NULL;
@@ -138,8 +136,6 @@ addFile(const char *directory, const char *fileName) {
 			fputs(ANSI_COLOR_RED
 				  "[Cache::addFile::newNamesRealloc] Allocation failure."
 				  ANSI_COLOR_RESETLN, stderr);
-			free(fcNames);
-			free(fcEntries);
 			free(entry);
 			free(name);
 			fcEntries = NULL;
