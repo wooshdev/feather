@@ -33,9 +33,9 @@
 #include <stdbool.h>
 #include <stddef.h>
 
-#include "core/security.h"
-#include "http2/session.h"
-#include "http2/settings.h"
+struct H2Frame;
+struct H2Session;
+struct H2Setting;
 
 bool
 H2HandleSettings(struct H2Session *, struct H2Frame *);

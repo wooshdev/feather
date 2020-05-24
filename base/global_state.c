@@ -29,12 +29,9 @@
 
 #include "global_state.h"
 
-#include <sys/stat.h>
 #include <sys/socket.h>
 #include <sys/utsname.h>
 
-#include <errno.h>
-#include <fcntl.h>
 #include <netdb.h>
 #include <signal.h>
 #include <stdbool.h>

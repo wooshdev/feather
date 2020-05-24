@@ -29,9 +29,10 @@
 
 #include "settings.h"
 
-#include <stdio.h>
-
+#include "http2/session.h"
 #include "http2/frame.h"
+
+struct H2Setting;
 
 bool
 H2SendSettings(struct H2Session *session, struct H2Setting *settings, 

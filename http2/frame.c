@@ -40,7 +40,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "http2/debugging.h"
+#include "core/security.h"
 #include "http2/session.h"
 
 /* If this functions returns 0, the contents of frame are undefined (can be any

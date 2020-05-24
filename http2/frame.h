@@ -46,8 +46,6 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-#include "core/security.h"
-
 /* RFC 7540 § 4.1 */
 struct H2Frame {
 	unsigned int  length : 24;

@@ -32,8 +32,6 @@
 
 #include <stdbool.h>
 
-#include "misc/default.h"
-
 struct FCEntry;
 
 bool

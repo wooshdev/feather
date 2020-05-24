@@ -43,6 +43,7 @@
 
 #include "cache/cache.h"
 #include "http/strings.h"
+#include "misc/default.h"
 #include "misc/io.h"
 #include "misc/options.h"
 
