@@ -58,6 +58,7 @@ H2HandleWindowUpdate(struct H2Session *session, struct H2Frame *frame) {
 			return false;
 		} else {
 			H2SendRSTStream(session, frame->stream, H2E_PROTOCOL_ERROR);
+			return true;
 		}
 	}
 

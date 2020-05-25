@@ -27,26 +27,16 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef HTTP2_ERROR_H
-#define HTTP2_ERROR_H
+#ifndef HTTP2_FRAMES_PRIORITY_H
+#define HTTP2_FRAMES_PRIORITY_H
 
-/**
- * RFC 7540 § 11.4 states that these errors can be found at IANA's website:
- * https://www.iana.org/assignments/http2-parameters/http2-parameters.xhtml
- */
-#define H2E_NO_ERROR 0x0
-#define H2E_PROTOCOL_ERROR 0x1
-#define H2E_INTERNAL_ERROR 0x2
-#define H2E_FLOW_CONTROL_ERROR 0x3
-#define H2E_SETTINGS_TIMEOUT 0x4
-#define H2E_STREAM_CLOSED 0x5
-#define H2E_FRAME_SIZE_ERROR 0x6
-#define H2E_REFUSED_STREAM 0x7
-#define H2E_CANCEL 0x8
-#define H2E_COMPRESSION_ERROR 0x9
-#define H2E_CONNECT_ERROR 0xA
-#define H2E_ENHANCE_YOUR_CALM 0xB
-#define H2E_INADEQUATE_SECURITY 0xC
-#define H2E_HTTP_1_1_REQUIRED 0xD
+#include <stdbool.h>
+#include <stdint.h>
 
-#endif /* HTTP2_ERROR_H */
+struct H2Frame;
+struct H2Session;
+
+bool
+H2HandlePriority(struct H2Session *, struct H2Frame *);
+
+#endif /* HTTP2_FRAMES_PRIORITY_H */

@@ -27,26 +27,35 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef HTTP2_ERROR_H
-#define HTTP2_ERROR_H
+#include "priority.h"
 
-/**
- * RFC 7540 § 11.4 states that these errors can be found at IANA's website:
- * https://www.iana.org/assignments/http2-parameters/http2-parameters.xhtml
- */
-#define H2E_NO_ERROR 0x0
-#define H2E_PROTOCOL_ERROR 0x1
-#define H2E_INTERNAL_ERROR 0x2
-#define H2E_FLOW_CONTROL_ERROR 0x3
-#define H2E_SETTINGS_TIMEOUT 0x4
-#define H2E_STREAM_CLOSED 0x5
-#define H2E_FRAME_SIZE_ERROR 0x6
-#define H2E_REFUSED_STREAM 0x7
-#define H2E_CANCEL 0x8
-#define H2E_COMPRESSION_ERROR 0x9
-#define H2E_CONNECT_ERROR 0xA
-#define H2E_ENHANCE_YOUR_CALM 0xB
-#define H2E_INADEQUATE_SECURITY 0xC
-#define H2E_HTTP_1_1_REQUIRED 0xD
+#include <arpa/inet.h>
 
-#endif /* HTTP2_ERROR_H */
+#include "http2/frame.h"
+#include "http2/session.h"
+
+#include "http2/frames/goaway.h"
+#include "http2/frames/rst_stream.h"
+#include "http2/error.h"
+
+static const char errorInfoStream0[] = "Priority on stream 0 is invalid";
+static const char errorInfoLength[] = "Priority frames are 5 octets of length";
+
+bool
+H2HandlePriority(struct H2Session *session, struct H2Frame *frame) {
+	if (frame->stream == 0) {
+		H2SendGoaway(session, 0, H2E_PROTOCOL_ERROR,
+					 sizeof(errorInfoStream0), errorInfoStream0);
+		return false;
+	}
+
+	if (frame->length != 5) {
+		H2SendGoaway(session, 0, H2E_FRAME_SIZE_ERROR,
+					 sizeof(errorInfoLength), errorInfoLength);
+		return false;
+	}
+
+	/* This information is not used at the moment. */
+
+	return true;
+}

@@ -28,6 +28,7 @@ BINARIES = \
 	bin/http/strings.so \
 	bin/http/syntax.so \
 	bin/http2/frames/goaway.so \
+	bin/http2/frames/priority.so \
 	bin/http2/frames/rst_stream.so \
 	bin/http2/frames/settings.so \
 	bin/http2/frames/window_update.so \
@@ -114,6 +115,12 @@ bin/http2/frames/goaway.so: http2/frames/goaway.c \
 	http2/frame.h \
 	http2/session.h
 	$(CC) $(CFLAGS) -c -o $@ http2/frames/goaway.c
+
+bin/http2/frames/priority.so: http2/frames/priority.c \
+	http2/frames/priority.h \
+	http2/frame.h \
+	http2/session.h
+	$(CC) $(CFLAGS) -c -o $@ http2/frames/priority.c
 
 bin/http2/frames/rst_stream.so: http2/frames/rst_stream.c \
 	http2/frames/rst_stream.h \
