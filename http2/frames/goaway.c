@@ -27,20 +27,50 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef HTTP2_SESSION_H
-#define HTTP2_SESSION_H
+#include "goaway.h"
 
-struct H2Session;
+#include <arpa/inet.h>
 
-#include "core/security.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#include "http2/session.h"
 #include "http2/frame.h"
 
-struct H2Session {
-	CSSClient		  client;
-	struct H2Frame	  frameBuffer;
-	uint32_t		  streamCount;
-	struct H2Stream **streams;
-	uint32_t		  windowSize;
-};
+bool
+H2HandleGoaway(struct H2Session *session, struct H2Frame *frame) {
+	(void) session;
+	(void) frame;
+	return false;
+}
 
-#endif /* HTTP2_SESSION_H */
+bool
+H2SendGoaway(struct H2Session *session,
+			 uint32_t lastStreamID, uint32_t errorCode,
+			 size_t additionalDebugDataSize, const void *additionalDebugData) {
+	bool ret;
+	uint8_t *buf;
+	struct H2Frame frame;
+
+	buf = malloc(additionalDebugDataSize + 8);
+
+	if (!buf)
+		return false;
+
+	frame.length = additionalDebugDataSize + 8;
+	frame.type = H2_FRAME_GOAWAY;
+	frame.flags = 0;
+	frame.stream = 0;
+	frame.payload = buf;
+
+	*((uint32_t *) buf) = ntohl(lastStreamID);
+	*((uint32_t *) &buf[4]) = ntohl(errorCode);
+	if (additionalDebugData && additionalDebugDataSize > 0)
+		memcpy(buf + 8, additionalDebugData, additionalDebugDataSize);
+
+	ret = H2SendFrame(session, &frame);
+	free(buf);
+
+	return ret;
+}

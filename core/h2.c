@@ -42,9 +42,12 @@
 
 #include "core/security.h"
 #include "http2/debugging.h"
+#include "http2/frames/goaway.h"
 #include "http2/frames/settings.h"
+#include "http2/frames/window_update.h"
 #include "http2/frame.h"
 #include "http2/session.h"
+#include "http2/stream.h"
 #include "misc/default.h"
 
 const char HTTP2Preface[] = "PRI * HTTP/2.0\r\n\r\nSM\r\n\r\n";
@@ -55,11 +58,15 @@ checkPreface(struct H2Session *);
 
 void CSHandleHTTP2(CSSClient client) {
 	bool (*frameHandlers[])(struct H2Session *, struct H2Frame *) = {
-		NULL,
-		NULL,
-		NULL,
-		NULL,
-		H2HandleSettings
+		NULL, /* DATA */
+		NULL, /* HEADERS */
+		NULL, /* PRIORITY */
+		NULL, /* RST_STREAM */
+		H2HandleSettings,
+		NULL, /* PUSH_PROMISE */
+		NULL, /* PING */
+		H2HandleGoaway,
+		H2HandleWindowUpdate,
 	};
 
 	bool ret;
@@ -73,6 +80,9 @@ void CSHandleHTTP2(CSSClient client) {
 	}
 
 	session->client = client;
+	session->streamCount = 0;
+	session->streams = NULL;
+	session->windowSize = 65535;
 
 	if (!checkPreface(session)) {
 		free(session);
@@ -92,12 +102,14 @@ void CSHandleHTTP2(CSSClient client) {
 		if (!H2ReadFrame(session, &session->frameBuffer))
 			break;
 
+		printf("[#%u] Frame: %s\n", session->frameBuffer.stream,
+			   H2DFrameTypeNames[session->frameBuffer.type]);
+
 		if (session->frameBuffer.type
 				< sizeof(frameHandlers) / sizeof(frameHandlers[0])
 			&& frameHandlers[session->frameBuffer.type] != NULL) {
-			ret = frameHandlers[session->frameBuffer.type](session,
-													 &session->frameBuffer);
-
+			ret = frameHandlers[session->frameBuffer.type]
+								(session, &session->frameBuffer);
 			if (!ret) {
 				/* TODO */
 			}
@@ -109,6 +121,9 @@ void CSHandleHTTP2(CSSClient client) {
 		 * size_t + realloc solution? */
 		free(session->frameBuffer.payload);
 	}
+
+	free(session);
+	puts(ANSI_COLOR_MAGENTA " === Connection Closed ===" ANSI_COLOR_RESET);
 }
 
 bool

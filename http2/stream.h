@@ -27,20 +27,22 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef HTTP2_SESSION_H
-#define HTTP2_SESSION_H
+#ifndef HTTP2_STREAM_H
+#define HTTP2_STREAM_H
 
-struct H2Session;
-
-#include "core/security.h"
-#include "http2/frame.h"
-
-struct H2Session {
-	CSSClient		  client;
-	struct H2Frame	  frameBuffer;
-	uint32_t		  streamCount;
-	struct H2Stream **streams;
-	uint32_t		  windowSize;
+enum H2StreamState {
+	H2_SS_IDLE = 0x0,
+	H2_SS_RESERVED_LOCAL = 0x1,
+	H2_SS_RESERVED_REMOTE = 0x2,
+	H2_SS_RESERVED_OPEN = 0x3,
+	H2_SS_RESERVED_HALF_CLOSED_LOCAL = 0x4,
+	H2_SS_RESERVED_HALF_CLOSED_REMOTE = 0x4,
+	H2_SS_RESERVED_CLOSED = 0x4,
 };
 
-#endif /* HTTP2_SESSION_H */
+struct H2Stream {
+	uint8_t	 state;
+	uint32_t windowSize;
+};
+
+#endif /* HTTP2_STREAM_H */

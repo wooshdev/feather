@@ -27,20 +27,38 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef HTTP2_SESSION_H
-#define HTTP2_SESSION_H
+#include "goaway.h"
 
-struct H2Session;
+#include <arpa/inet.h>
 
-#include "core/security.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#include "http2/session.h"
 #include "http2/frame.h"
 
-struct H2Session {
-	CSSClient		  client;
-	struct H2Frame	  frameBuffer;
-	uint32_t		  streamCount;
-	struct H2Stream **streams;
-	uint32_t		  windowSize;
-};
+bool
+H2HandleRSTStream(struct H2Session *session, struct H2Frame *frame) {
+	(void) session;
+	(void) frame;
+	return true;
+}
 
-#endif /* HTTP2_SESSION_H */
+bool
+H2SendRSTStream(struct H2Session *session, uint32_t stream,
+				uint32_t errorCode) {
+	uint8_t payload[4];
+	struct H2Frame frame;
+
+	frame.length = 4;
+	frame.type = H2_FRAME_RST_STREAM;
+	frame.flags = 0;
+	frame.stream = stream;
+	frame.payload = payload;
+
+	stream = htonl(errorCode);
+	memcpy(payload, &stream, 4);
+
+	return H2SendFrame(session, &frame);
+}

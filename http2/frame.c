@@ -104,6 +104,8 @@ H2SendFrame(struct H2Session *session, struct H2Frame *frame) {
 		frame->stream & 0x000000FF
 	};
 
+	printf("frame type is %u\n", frame->type);
+
 	if (!CSSWriteClient(session->client, buf, sizeof(buf)))
 		return false;
 

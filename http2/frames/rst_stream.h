@@ -27,20 +27,19 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef HTTP2_SESSION_H
-#define HTTP2_SESSION_H
+#ifndef HTTP2_FRAMES_RST_STREAM_H
+#define HTTP2_FRAMES_RST_STREAM_H
 
+#include <stdbool.h>
+#include <stdint.h>
+
+struct H2Frame;
 struct H2Session;
 
-#include "core/security.h"
-#include "http2/frame.h"
+bool
+H2HandleRSTStream(struct H2Session *, struct H2Frame *);
 
-struct H2Session {
-	CSSClient		  client;
-	struct H2Frame	  frameBuffer;
-	uint32_t		  streamCount;
-	struct H2Stream **streams;
-	uint32_t		  windowSize;
-};
+bool
+H2SendRSTStream(struct H2Session *, uint32_t, uint32_t);
 
-#endif /* HTTP2_SESSION_H */
+#endif /* HTTP2_FRAMES_RST_STREAM_H */

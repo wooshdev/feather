@@ -27,7 +27,10 @@ BINARIES = \
 	bin/http/response_headers.so \
 	bin/http/strings.so \
 	bin/http/syntax.so \
+	bin/http2/frames/goaway.so \
+	bin/http2/frames/rst_stream.so \
 	bin/http2/frames/settings.so \
+	bin/http2/frames/window_update.so \
 	bin/http2/debugging.so \
 	bin/http2/frame.so \
 	bin/misc/io.so \
@@ -80,6 +83,9 @@ bin/core/h1.so: core/h1.c \
 bin/core/h2.so: core/h2.c \
 	core/h2.h \
 	core/security.h \
+	http2/frame.h \
+	http2/session.h \
+	http2/stream.h \
 	misc/default.h
 	$(CC) $(CFLAGS) -c -o $@ core/h2.c
 
@@ -103,12 +109,30 @@ bin/http/syntax.so: http/syntax.c \
 	http/syntax.h
 	$(CC) $(CFLAGS) -c -o $@ http/syntax.c
 
+bin/http2/frames/goaway.so: http2/frames/goaway.c \
+	http2/frames/goaway.h \
+	http2/frame.h \
+	http2/session.h
+	$(CC) $(CFLAGS) -c -o $@ http2/frames/goaway.c
+
+bin/http2/frames/rst_stream.so: http2/frames/rst_stream.c \
+	http2/frames/rst_stream.h \
+	http2/frame.h \
+	http2/session.h
+	$(CC) $(CFLAGS) -c -o $@ http2/frames/rst_stream.c
+
 bin/http2/frames/settings.so: http2/frames/settings.c \
 	http2/frames/settings.h \
 	http2/settings.h \
 	core/security.h \
 	misc/default.h
 	$(CC) $(CFLAGS) -c -o $@ http2/frames/settings.c
+
+bin/http2/frames/window_update.so: http2/frames/window_update.c \
+	http2/frames/window_update.h \
+	http2/frame.h \
+	http2/session.h
+	$(CC) $(CFLAGS) -c -o $@ http2/frames/window_update.c
 
 bin/http2/debugging.so: http2/debugging.c \
 	http2/debugging.h

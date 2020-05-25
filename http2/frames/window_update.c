@@ -27,20 +27,39 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef HTTP2_SESSION_H
-#define HTTP2_SESSION_H
+#include "window_update.h"
 
-struct H2Session;
+#include <arpa/inet.h>
 
-#include "core/security.h"
 #include "http2/frame.h"
+#include "http2/session.h"
 
-struct H2Session {
-	CSSClient		  client;
-	struct H2Frame	  frameBuffer;
-	uint32_t		  streamCount;
-	struct H2Stream **streams;
-	uint32_t		  windowSize;
-};
+#include "http2/frames/goaway.h"
+#include "http2/frames/rst_stream.h"
+#include "http2/error.h"
 
-#endif /* HTTP2_SESSION_H */
+static const char errorInfoIncrement0[] = "Window Size Increment was 0";
+
+bool
+H2HandleWindowUpdate(struct H2Session *session, struct H2Frame *frame) {
+	uint32_t windowSizeIncrement;
+
+	if (frame->length != 4) {
+		/* TODO Send error */
+		return false;
+	}
+
+	windowSizeIncrement = ntohl(*((uint32_t *) frame->payload) & 0x7FFFFFFF);
+
+	if (windowSizeIncrement == 0) {
+		if (frame->stream == 0) {
+			H2SendGoaway(session, 0, H2E_PROTOCOL_ERROR,
+						 sizeof(errorInfoIncrement0), errorInfoIncrement0);
+			return false;
+		} else {
+			H2SendRSTStream(session, frame->stream, H2E_PROTOCOL_ERROR);
+		}
+	}
+
+	return true;
+}
