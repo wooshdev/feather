@@ -128,7 +128,7 @@ Explanation: The two `clean` and `all` targets will insure the complete codebase
 $ clang-tidy <compilation unit> -- -I .
 ```
 Where `<compilation unit>` is a .c file, for example `main.c`.
-### Infer
+### Infer <a name="testing-infer"></a>
 [Infer](https://github.com/facebook/infer) is an analysis tool created by Facebook. It finds errors previously not found by other static analysis tools. Click [here](https://fbinfer.com/docs/getting-started) for install instructions. To run Infer on this project, execute the following command:
 ```bash
 $ infer run -- make clean all
@@ -159,7 +159,8 @@ The following make targets are present in the Makefile:
 |-|-|
 | all | This is the default target, and will create the executable binary. |
 | clean | This will delete all binaries created, and will restore the clone to the original state. |
-| cppcheck| The cppcheck target analyzes the source code. For more information, see the [Cppcheck](#testing-cppcheck] test section. |
+| cppcheck| The cppcheck target analyzes the source code. For more information, see the [Cppcheck](#testing-cppcheck) test section. |
+| infer | The infer target analyzes the source code. For more information, see the [Infer](#testing-infer) test section. |
 | memory | The memory target runs binary in an enclosed mode using Valgrind. For more information, see the [Valgrind](#testing-valgrind) test section. |
 
 ## License

@@ -208,7 +208,14 @@ memory:
 		 --track-fds=yes \
 		 ./server
 
+# The 'Infer' target will run the infer program. This program statically
+# analyzes code which helps in tracking down null pointer dereferences and
+# errors of the kind. For more information, visit the official website:
+# https://fbinfer.com/
+infer:
+	infer -r run -- make clean all
+
 # the 'cppcheck' target will invoke the cppcheck program. This program 
 # statically analyzes the code.
 cppcheck:
-	cppcheck -I. -q --std=c99 --enable=all .
+	cppcheck -I. -q --std=c99 --enable=all --suppress=missingIncludeSystem .
