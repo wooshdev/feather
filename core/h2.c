@@ -44,6 +44,7 @@
 #include "http2/debugging.h"
 #include "http2/frames/goaway.h"
 #include "http2/frames/priority.h"
+#include "http2/frames/rst_stream.h"
 #include "http2/frames/settings.h"
 #include "http2/frames/window_update.h"
 #include "http2/frame.h"
@@ -62,7 +63,7 @@ void CSHandleHTTP2(CSSClient client) {
 		NULL, /* DATA */
 		NULL, /* HEADERS */
 		H2HandlePriority,
-		NULL, /* RST_STREAM */
+		H2HandleRSTStream,
 		H2HandleSettings,
 		NULL, /* PUSH_PROMISE */
 		NULL, /* PING */
