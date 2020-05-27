@@ -43,6 +43,7 @@
 #include "core/security.h"
 #include "http2/debugging.h"
 #include "http2/frames/goaway.h"
+#include "http2/frames/headers.h"
 #include "http2/frames/priority.h"
 #include "http2/frames/rst_stream.h"
 #include "http2/frames/settings.h"
@@ -61,7 +62,7 @@ checkPreface(struct H2Session *);
 void CSHandleHTTP2(CSSClient client) {
 	bool (*frameHandlers[])(struct H2Session *, struct H2Frame *) = {
 		NULL, /* DATA */
-		NULL, /* HEADERS */
+		H2HandleHeaders,
 		H2HandlePriority,
 		H2HandleRSTStream,
 		H2HandleSettings,

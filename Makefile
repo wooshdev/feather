@@ -10,6 +10,8 @@ ADDITIONAL_LDFLAGS ?=
 CC = clang
 CFLAGS = -Wall -Wextra -Wpedantic -g -I. $(ADDITIONAL_CFLAGS)
 LDFLAGS = -pthread -lm $(ADDITIONAL_LDFLAGS)
+CXX = clang++
+CXXFLAGS = -Wall -Wextra -Wpedantic -g -I. $(ADDITIONAL_CFLAGS)
 
 # Dependencies using pkg-config (OpenSSL, brotli)
 DEPENDENCIES = openssl libbrotlicommon libbrotlienc
@@ -28,10 +30,12 @@ BINARIES = \
 	bin/http/strings.so \
 	bin/http/syntax.so \
 	bin/http2/frames/goaway.so \
+	bin/http2/frames/headers.so \
 	bin/http2/frames/priority.so \
 	bin/http2/frames/rst_stream.so \
 	bin/http2/frames/settings.so \
 	bin/http2/frames/window_update.so \
+	bin/http2/huffman/huffman.so \
 	bin/http2/debugging.so \
 	bin/http2/frame.so \
 	bin/misc/io.so \
@@ -40,7 +44,11 @@ BINARIES = \
 	bin/redir/client.so \
 	bin/redir/server.so \
 
-all: server bin/tests/redir
+TEST_BINARIES = \
+	bin/tests/http2/huffman \
+	bin/tests/redir
+
+all: server $(BINARIES) $(TEST_BINARIES)
 
 server: main.c bin/dirinfo $(BINARIES)
 	$(CC) $(CFLAGS) -o $@ main.c $(BINARIES) $(LDFLAGS)
@@ -56,11 +64,13 @@ bin/dirinfo:
 	@mkdir bin/http
 	@mkdir bin/http2
 	@mkdir bin/http2/frames
+	@mkdir bin/http2/huffman
 	@mkdir bin/misc
 	@mkdir bin/redir
 	@mkdir bin/tests
 	@mkdir bin/tests/base
 	@mkdir bin/tests/base/global_state
+	@mkdir bin/tests/http2
 
 bin/base/global_state.so: base/global_state.c \
 	base/global_state.h
@@ -116,6 +126,12 @@ bin/http2/frames/goaway.so: http2/frames/goaway.c \
 	http2/session.h
 	$(CC) $(CFLAGS) -c -o $@ http2/frames/goaway.c
 
+bin/http2/frames/headers.so: http2/frames/headers.c \
+	http2/frames/headers.h \
+	http2/frame.h \
+	http2/session.h
+	$(CC) $(CFLAGS) -c -o $@ http2/frames/headers.c
+
 bin/http2/frames/priority.so: http2/frames/priority.c \
 	http2/frames/priority.h \
 	http2/frame.h \
@@ -140,6 +156,11 @@ bin/http2/frames/window_update.so: http2/frames/window_update.c \
 	http2/frame.h \
 	http2/session.h
 	$(CC) $(CFLAGS) -c -o $@ http2/frames/window_update.c
+
+bin/http2/huffman/huffman.so: http2/huffman/huffman.c \
+	http2/huffman/huffman.h \
+	http2/huffman/data.h
+	$(CC) $(CFLAGS) -c -o $@ http2/huffman/huffman.c
 
 bin/http2/debugging.so: http2/debugging.c \
 	http2/debugging.h
@@ -177,6 +198,13 @@ bin/tests/redir: tests/redir/main.c \
 		bin/base/global_state.so bin/http/syntax.so bin/misc/io.so \
 		bin/http/response_headers.so bin/misc/statistics.so \
 		bin/misc/options.so bin/http/strings.so
+
+bin/tests/http2/huffman: tests/http2/huffman/huffman.cpp \
+	bin/http2/huffman/huffman.so \
+	http2/huffman/huffman.c \
+	http2/huffman/huffman.h \
+	http2/huffman/data.h
+	$(CXX) $(CXXFLAGS) -o $@ tests/http2/huffman/huffman.cpp bin/http2/huffman/huffman.so
 
 bin/tests/base/global_state/gspopulateproductname.so: \
 	tests/base/global_state/gspopulateproductname.c \
