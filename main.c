@@ -78,11 +78,13 @@ int main(void) {
 	act.sa_handler = CatchSignal;
 	act.sa_flags = 0;
 
-	if (sigaction(SIGINT,	&act, NULL) == -1 ||
-		sigaction(SIGPIPE,	&act, NULL) == -1) {
+	if (sigaction(SIGINT,	&act, NULL) == -1) {
 		perror("[Main] sigaction() failed");
 		StopWithError("SignalSetup", "Failed to set signal handler.");
 	}
+
+	/* Ignore the SIGPIPE signal. */
+	signal(SIGPIPE, SIG_IGN);
 
 	/* Setup options/configuration */
 	if (!OMSetup())
